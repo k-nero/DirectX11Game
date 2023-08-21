@@ -63,7 +63,7 @@ bool Window::Initialize()
 	return true;
 }
 
-bool Window::Broadcast()
+void Window::Broadcast()
 {
 	MSG msg{};
 	this->OnUpdate();
@@ -72,7 +72,6 @@ bool Window::Broadcast()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return true;
 }
 
 bool Window::Release()

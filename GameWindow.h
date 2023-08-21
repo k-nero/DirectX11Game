@@ -1,7 +1,10 @@
 #pragma once
+#include <DirectXMath.h>
 #include "Window.h"
 #include "GraphicsEngine.h"
 #include "SwapChain.h"
+#include "DeviceContext.h"
+#include "VertexBuffer.h"
 
 class GameWindow : public Window
 {
@@ -16,5 +19,6 @@ public:
 
 private:
 	SwapChain * m_swap_chain = nullptr;
+	VertexBuffer* m_vb = nullptr;
 };
 

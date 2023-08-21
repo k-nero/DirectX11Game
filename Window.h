@@ -5,7 +5,7 @@ class Window
 public:
 	Window();
 	bool Initialize();
-	bool Broadcast();
+	void Broadcast();
 	bool Release();
 	bool IsRunning() const;
 	void SetHWND(HWND hwnd);

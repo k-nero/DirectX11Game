@@ -51,6 +51,9 @@
     <ClCompile Include="DeviceContext.cpp">
       <Filter>Engine\Graphic\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Engine\Graphic\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -66,6 +69,9 @@
       <Filter>Engine\Graphic\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DeviceContext.h">
+      <Filter>Engine\Graphic\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
       <Filter>Engine\Graphic\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

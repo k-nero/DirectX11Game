@@ -1,6 +1,4 @@
 #include "SwapChain.h"
-#include "GraphicsEngine.h"
-#include <iostream>
 
 SwapChain::SwapChain()
 {
@@ -40,6 +38,7 @@ bool SwapChain::Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen)
 		return false;
 	}
 	hr = m_pDevice->CreateRenderTargetView(m_buffer, nullptr, &m_rtv);
+	m_buffer->Release();
 	if (FAILED(hr))
 	{
 		return false;
@@ -64,12 +63,6 @@ ID3D11DepthStencilView* SwapChain::GetDepthStencilView()
 
 void SwapChain::Release()
 {
-	SwapChain::~SwapChain();
-	delete this;
-}
-
-SwapChain::~SwapChain()
-{
 	if (m_swapChain)
 	{
 		m_swapChain->Release();
@@ -86,4 +79,11 @@ SwapChain::~SwapChain()
 		m_dsv->Release();
 		m_dsv = nullptr;
 	}
+	SwapChain::~SwapChain();
+	delete this;
+}
+
+SwapChain::~SwapChain()
+{
+	
 }
