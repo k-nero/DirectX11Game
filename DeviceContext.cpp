@@ -22,9 +22,25 @@ void DeviceContext::SetVertexBuffer(VertexBuffer* vertexBuffer)
 	m_deviceContext->IASetInputLayout(layout);
 }
 
+void DeviceContext::SetVertexShader(VertexShader* vertexShader)
+{
+	m_deviceContext->VSSetShader(vertexShader->GetShader(), nullptr, 0);
+}
+
+void DeviceContext::SetPixelShader(PixelShader* pixelShader)
+{
+	m_deviceContext->PSSetShader(pixelShader->GetShader(), nullptr, 0);
+}
+
 void DeviceContext::DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex)
 {
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_deviceContext->Draw(vertexCount, startVertexIndex);
+}
+
+void DeviceContext::DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex)
+{
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	m_deviceContext->Draw(vertexCount, startVertexIndex);
 }
 

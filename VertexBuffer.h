@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphicsEngine.h"
+
 class VertexBuffer 
 {
 public:
