@@ -5,14 +5,14 @@ Window::Window()
 
 }
 
-__int64 _stdcall WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+__int64 _stdcall WndProc(HWND hWnd, unsigned int  message, unsigned __int64 wParam, __int64 lParam)
 {
 	switch (message)
 	{
 		case WM_CREATE:
 		{
-			Window* window = (Window*) ((LPCREATESTRUCT) lParam)->lpCreateParams;
-			SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) window);
+			Window* window = (Window*) ((LPCREATESTRUCTW) lParam)->lpCreateParams;
+			SetWindowLongPtr(hWnd, GWLP_USERDATA, (__int64) window);
 			window->SetHWND(hWnd);
 			window->OnCreate();
 			break;
@@ -30,18 +30,18 @@ __int64 _stdcall WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 bool Window::Initialize()
 {
-	WNDCLASSEX wc{};
+	WNDCLASSEXW wc{};
 	wc.cbClsExtra = 0;
-	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.cbSize = sizeof(WNDCLASSEXW);
 	wc.cbWndExtra = 0;
-	wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hInstance = NULL;
+	wc.hbrBackground = (HBRUSH) 0x0005U;
+	wc.hCursor = LoadCursor(0, ((LPWSTR) (0x7F00)));
+	wc.hIcon = LoadIcon(0, ((LPWSTR) (0x7F00)));
+	wc.hIconSm = LoadIcon(0, ((LPWSTR) (0x7F00)));
+	wc.hInstance = 0;
 	wc.lpszClassName = L"CXWindow";
-	wc.lpszMenuName = NULL;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpszMenuName = 0;
+	wc.style = 0x0003U;
 	wc.lpfnWndProc = &WndProc;
 
 	if (!RegisterClassEx(&wc))
@@ -49,7 +49,7 @@ bool Window::Initialize()
 		return false;
 	}
 
-	m_hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"CXWindow", L"DirectX 11 Game", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, NULL, NULL, NULL, this);
+	m_hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"CXWindow", L"DirectX 11 Game", ( 0x00CBF2EDL ), ((int) 0x80000000), ((int) 0x80000000), 1280, 720, 0, 0, 0, this);
 
 	if (m_hWnd == 0)
 	{

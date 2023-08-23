@@ -5,7 +5,7 @@ class SwapChain
 {
 public:
 	SwapChain();
-	bool Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen);
+	bool Initialize(HWND hwnd, unsigned int width, unsigned int height, bool fullscreen);
 	void Present(bool vsync);
 	ID3D11RenderTargetView* GetRenderTargetView() const;
 	ID3D11DepthStencilView* GetDepthStencilView() const;

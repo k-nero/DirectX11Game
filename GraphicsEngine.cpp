@@ -23,42 +23,28 @@ bool GraphicsEngine::Initialize()
 
 	for (auto m_driverType : driverTypes)
 	{
-		const HRESULT hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels,ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_featureLevel, &deviceContext);
-		if (SUCCEEDED(hr))
+		const long hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels, (sizeof(*RtlpNumberOf(featureLevels))), (0x7U), &m_pDevice, &m_featureLevel, &deviceContext);
+		if (hr >= 0x0L)
 		{
 			m_pDeviceContext = new DeviceContext(deviceContext);
 
 			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**) &m_pDXGIDevice);
 			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**) &m_pDXGIAdapter);
 			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**) &m_pDXGIFactory);
-#if defined(DEBUG)
+#if defined(_DEBUG)
 			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**) &m_debug);
-			m_debug->SetFeatureMask(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
-			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			m_debug->SetFeatureMask(0x3U);
+			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
 			m_debug->ValidateContext(deviceContext);
 			//m_debug->ValidateContextForDispatch(deviceContext);
 
 			// create info queue object
 			
-			if (SUCCEEDED(m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**) &pInfoQueue)))
+			if ((m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**) &pInfoQueue)) >= 0x0L)
 			{
 				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
 				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
 			}
-
-			// configure info queue to break on warnings or error
-
-			UINT64 numStoredMessages = pInfoQueue->GetNumStoredMessages();
-			for (UINT64 i = 0; i < numStoredMessages; i++)
-			{
-				SIZE_T messageSize = 0;
-				pInfoQueue->GetMessage(i, NULL, &messageSize);
-				D3D11_MESSAGE* pMessage = (D3D11_MESSAGE*) malloc(messageSize);
-				pInfoQueue->GetMessage(i, pMessage, &messageSize);
-				std::cout << pMessage->ID << " - " << pMessage->pDescription << " - " << pMessage->Severity << " \r" << std::flush;
-				free(pMessage);
-			}
-			pInfoQueue->ClearStoredMessages();
 #endif
 			return true;
 		}
@@ -217,6 +203,11 @@ void GraphicsEngine::ReleaseCompiledShader()
 		m_blob->Release();
 		m_blob = nullptr;
 	}
+}
+
+ID3D11InfoQueue* GraphicsEngine::GetInfoQueue() const
+{
+	return pInfoQueue;
 }
 
 ID3D11Device* GraphicsEngine::GetDevice() const

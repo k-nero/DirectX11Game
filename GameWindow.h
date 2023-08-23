@@ -18,7 +18,8 @@ public:
 	void OnCreate() override;
 	void OnDestroy() override;
 	void OnUpdate() override;
-
+private:
+	GraphicsEngine* g_pGraphics_engine = nullptr;
 private:
 	SwapChain * m_swap_chain = nullptr;
 	VertexBuffer* m_vb = nullptr;

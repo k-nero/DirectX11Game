@@ -5,7 +5,7 @@ class VertexBuffer
 {
 public:
 	VertexBuffer();
-	bool Load(const void* list_vertices, unsigned int size_vertex, unsigned int size_list, const void* shader_byte_code, unsigned int size_byte_shader);
+	bool Load(const void* list_vertices, unsigned int size_vertex, unsigned int size_list, const void* shader_byte_code, size_t size_byte_shader);
 	void Release();
 	~VertexBuffer();
 public:

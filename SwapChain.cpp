@@ -3,7 +3,7 @@
 SwapChain::SwapChain()
 = default;
 
-bool SwapChain::Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen)
+bool SwapChain::Initialize(HWND hwnd, unsigned int width, unsigned int height, bool fullscreen)
 {
 
 	ID3D11Device* m_pDevice = GraphicsEngine::Get()->GetDevice();
@@ -15,7 +15,7 @@ bool SwapChain::Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen)
 	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.BufferDesc.RefreshRate.Numerator = 144;
 	desc.BufferDesc.RefreshRate.Denominator = 1;
-	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	desc.BufferUsage = 0x00000020UL;
 	desc.OutputWindow = hwnd;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
@@ -24,20 +24,20 @@ bool SwapChain::Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen)
 
 	__int64 hr = GraphicsEngine::Get()->GetDXGIFactory()->CreateSwapChain(m_pDevice, &desc, &m_swapChain);
 
-	if (FAILED(hr))
+	if (hr < 0x0L)
 	{
 		return false;
 	}
 
 	ID3D11Texture2D* m_buffer = nullptr;
 	hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&m_buffer);
-	if (FAILED(hr))
+	if (hr < 0x0L)
 	{
 		return false;
 	}
 	hr = m_pDevice->CreateRenderTargetView(m_buffer, nullptr, &m_rtv);
 	m_buffer->Release();
-	if (FAILED(hr))
+	if (hr < 0x0L)
 	{
 		return false;
 	}

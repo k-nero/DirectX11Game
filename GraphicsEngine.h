@@ -51,7 +51,9 @@ private:
 	ID3DBlob* m_psblob = nullptr;
 	ID3D11VertexShader* m_vs = nullptr;
 	ID3D11PixelShader* m_ps = nullptr;
+public:
+	ID3D11InfoQueue* GetInfoQueue() const;
 private:
 	ID3D11Debug * m_debug = nullptr;
-	ID3D11InfoQueue* pInfoQueue;
+	ID3D11InfoQueue* pInfoQueue = nullptr;
 };
