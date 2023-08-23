@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <iostream>
 #include <d3dcompiler.h>
 #include "SwapChain.h"
 #include "DeviceContext.h"
@@ -23,6 +24,7 @@ public:
 public:
 	ID3D11Device* GetDevice();
 	IDXGIFactory* GetDXGIFactory();
+	ID3D11DeviceContext* GetDeviceContext();
 	static GraphicsEngine* Get();
 	SwapChain* CreateSwapChain();
 	DeviceContext* GetImmediateDeviceContext();
@@ -49,4 +51,7 @@ private:
 	ID3DBlob* m_psblob = nullptr;
 	ID3D11VertexShader* m_vs = nullptr;
 	ID3D11PixelShader* m_ps = nullptr;
+private:
+	ID3D11Debug * m_debug = nullptr;
+	ID3D11InfoQueue* pInfoQueue;
 };

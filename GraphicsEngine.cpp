@@ -30,10 +30,40 @@ bool GraphicsEngine::Initialize()
 		hr = D3D11CreateDevice(NULL, m_driverType, NULL, creationFlags, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_featureLevel, &deviceContext);
 		if (SUCCEEDED(hr))
 		{
+			m_pDeviceContext = new DeviceContext(deviceContext);
+
 			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**) &m_pDXGIDevice);
 			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**) &m_pDXGIAdapter);
 			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**) &m_pDXGIFactory);
-			m_pDeviceContext = new DeviceContext(deviceContext);
+#if defined(DEBUG)
+			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**) &m_debug);
+			m_debug->SetFeatureMask(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
+			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			m_debug->ValidateContext(deviceContext);
+			//m_debug->ValidateContextForDispatch(deviceContext);
+
+			// create info queue object
+			
+			if (SUCCEEDED(m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**) &pInfoQueue)))
+			{
+				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+			}
+
+			// configure info queue to break on warnings or error
+
+			UINT64 numStoredMessages = pInfoQueue->GetNumStoredMessages();
+			for (UINT64 i = 0; i < numStoredMessages; i++)
+			{
+				SIZE_T messageSize = 0;
+				pInfoQueue->GetMessage(i, NULL, &messageSize);
+				D3D11_MESSAGE* pMessage = (D3D11_MESSAGE*) malloc(messageSize);
+				pInfoQueue->GetMessage(i, pMessage, &messageSize);
+				std::cout << pMessage->ID << " - " << pMessage->pDescription << " - " << pMessage->Severity << " \r" << std::flush;
+				free(pMessage);
+			}
+			pInfoQueue->ClearStoredMessages();
+#endif
 			return true;
 		}
 	}
@@ -47,6 +77,16 @@ void GraphicsEngine::Shutdown()
 
 GraphicsEngine::~GraphicsEngine()
 {
+	if(pInfoQueue)
+	{
+		pInfoQueue->Release();
+		pInfoQueue = nullptr;
+	}
+	if(m_debug)
+	{
+		m_debug->Release();
+		m_debug = nullptr;
+	}
 	if (m_vs)
 	{
 		m_vs->Release();
@@ -141,6 +181,8 @@ bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* en
 	{
 		if (error_blob)
 		{
+			std::string errorMessage = (char*) error_blob->GetBufferPointer();
+			OutputDebugStringA(errorMessage.c_str());
 			error_blob->Release();
 			return false;
 		}
@@ -159,6 +201,8 @@ bool GraphicsEngine::CompileVertexShader(const wchar_t* file_name, const char* e
 	{
 		if (error_blob)
 		{
+			std::string errorMessage = (char*) error_blob->GetBufferPointer();
+			OutputDebugStringA(errorMessage.c_str());
 			error_blob->Release();
 		}
 		return false;
@@ -187,6 +231,11 @@ ID3D11Device* GraphicsEngine::GetDevice()
 IDXGIFactory* GraphicsEngine::GetDXGIFactory()
 {
 	return m_pDXGIFactory;
+}
+
+ID3D11DeviceContext* GraphicsEngine::GetDeviceContext()
+{
+	return this->deviceContext;
 }
 
 GraphicsEngine* GraphicsEngine::Get()

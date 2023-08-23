@@ -11,7 +11,7 @@ bool SwapChain::Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen)
 	ID3D11Device* m_pDevice = GraphicsEngine::Get()->GetDevice();
 	DXGI_SWAP_CHAIN_DESC desc;
 	memset(&desc, 0, sizeof(desc));
-	desc.BufferCount = 1;
+	desc.BufferCount = 4;
 	desc.BufferDesc.Width = width;
 	desc.BufferDesc.Height = height;
 	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
