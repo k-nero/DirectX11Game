@@ -1,9 +1,7 @@
 #include "SwapChain.h"
 
 SwapChain::SwapChain()
-{
-
-}
+= default;
 
 bool SwapChain::Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen)
 {
@@ -51,12 +49,12 @@ void SwapChain::Present(bool vsync)
 	m_swapChain->Present(vsync, NULL);
 }
 
-ID3D11RenderTargetView* SwapChain::GetRenderTargetView()
+ID3D11RenderTargetView* SwapChain::GetRenderTargetView() const
 {
 	return m_rtv;
 }
 
-ID3D11DepthStencilView* SwapChain::GetDepthStencilView()
+ID3D11DepthStencilView* SwapChain::GetDepthStencilView() const
 {
 	return m_dsv;
 }

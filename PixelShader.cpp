@@ -1,8 +1,7 @@
 #include "PixelShader.h"
 
 PixelShader::PixelShader()
-{
-}
+= default;
 
 PixelShader::~PixelShader()
 {
@@ -27,7 +26,7 @@ void PixelShader::Release()
     delete this;
 }
 
-ID3D11PixelShader* PixelShader::GetShader()
+ID3D11PixelShader* PixelShader::GetShader() const
 {
     return this->m_ps;
 }

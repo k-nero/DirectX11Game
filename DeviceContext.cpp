@@ -5,14 +5,14 @@ DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext):m_deviceContext
 
 }
 
-void DeviceContext::ClearRenderTargetView(ID3D11RenderTargetView* renderTargetView, float red, float green, float blue, float alpha)
+void DeviceContext::ClearRenderTargetView(ID3D11RenderTargetView* renderTargetView, float red, float green, float blue, float alpha) const
 {
 	FLOAT clearColor[] = { red, green, blue, alpha };
 	m_deviceContext->ClearRenderTargetView(renderTargetView, clearColor);
 	m_deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
 }
 
-void DeviceContext::SetVertexBuffer(VertexBuffer* vertexBuffer)
+void DeviceContext::SetVertexBuffer(VertexBuffer* vertexBuffer) const
 {
 	unsigned int stride = vertexBuffer->GetVertexSize();
 	auto buffer = vertexBuffer->GetBuffer();
@@ -22,35 +22,35 @@ void DeviceContext::SetVertexBuffer(VertexBuffer* vertexBuffer)
 	m_deviceContext->IASetInputLayout(layout);
 }
 
-void DeviceContext::SetVertexShader(VertexShader* vertexShader)
+void DeviceContext::SetVertexShader(VertexShader* vertexShader) const
 {
 	m_deviceContext->VSSetShader(vertexShader->GetShader(), nullptr, 0);
 }
 
-void DeviceContext::SetPixelShader(PixelShader* pixelShader)
+void DeviceContext::SetPixelShader(PixelShader* pixelShader) const
 {
 	m_deviceContext->PSSetShader(pixelShader->GetShader(), nullptr, 0);
 }
 
-void DeviceContext::DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex)
+void DeviceContext::DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex) const
 {
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_deviceContext->Draw(vertexCount, startVertexIndex);
 }
 
-void DeviceContext::DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex)
+void DeviceContext::DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex) const
 {
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	m_deviceContext->Draw(vertexCount, startVertexIndex);
 }
 
-void DeviceContext::SetViewportSize(unsigned width, unsigned height)
+void DeviceContext::SetViewportSize(unsigned width, unsigned height) const
 {
 	D3D11_VIEWPORT viewport = {};
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = (float)width;
-	viewport.Height = (float)height;
+	viewport.Width = static_cast<float>(width);
+	viewport.Height = static_cast<float>(height);
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 	m_deviceContext->RSSetViewports(1, &viewport);
