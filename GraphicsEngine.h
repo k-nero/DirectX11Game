@@ -21,11 +21,11 @@ public:
 	void Shutdown();
 	~GraphicsEngine();
 public:
-	ID3D11Device* GetDevice();
+	ID3D11Device* GetDevice() const;
 	IDXGIFactory* GetDXGIFactory();
 	static GraphicsEngine* Get();
 	SwapChain* CreateSwapChain();
-	DeviceContext* GetImmediateDeviceContext();
+	DeviceContext* GetImmediateDeviceContext() const;
 	VertexBuffer* CreateVertexBuffer();
 
 public:

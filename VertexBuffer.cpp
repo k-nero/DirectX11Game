@@ -1,10 +1,9 @@
 #include "VertexBuffer.h"
 
 VertexBuffer::VertexBuffer()
-{
-}
+= default;
 
-bool VertexBuffer::Load(void* list_vertices, unsigned int size_vertex, unsigned int size_list, void* shader_byte_code, unsigned int size_byte_shader)
+bool VertexBuffer::Load(const void* list_vertices, unsigned int size_vertex, unsigned int size_list, const void* shader_byte_code, unsigned int size_byte_shader)
 {
 	if (m_buffer)m_buffer->Release();
 	if (m_layout)m_layout->Release();
@@ -54,22 +53,22 @@ VertexBuffer::~VertexBuffer()
 	}
 }
 
-unsigned VertexBuffer::GetVertexListSize()
+unsigned VertexBuffer::GetVertexListSize() const
 {
 	return (m_vertext_list_size);
 }
 
-unsigned int VertexBuffer::GetVertexSize()
+unsigned int VertexBuffer::GetVertexSize() const
 {
 	return m_vertex_size;
 }
 
-ID3D11Buffer* VertexBuffer::GetBuffer()
+ID3D11Buffer* VertexBuffer::GetBuffer() const
 {
 	return m_buffer;
 }
 
-ID3D11InputLayout* VertexBuffer::GetLayout()
+ID3D11InputLayout* VertexBuffer::GetLayout() const
 {
 	return m_layout;
 }

@@ -7,8 +7,8 @@ public:
 	SwapChain();
 	bool Initialize(HWND hwnd, UINT width, UINT height, bool fullscreen);
 	void Present(bool vsync);
-	ID3D11RenderTargetView* GetRenderTargetView();
-	ID3D11DepthStencilView* GetDepthStencilView();
+	ID3D11RenderTargetView* GetRenderTargetView() const;
+	ID3D11DepthStencilView* GetDepthStencilView() const;
 	void Release();
 	~SwapChain();
 private:

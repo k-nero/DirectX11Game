@@ -1,8 +1,7 @@
 #include "VertexShader.h"
 
 VertexShader::VertexShader()
-{
-}
+= default;
 
 void VertexShader::Release()
 {
@@ -26,7 +25,7 @@ bool VertexShader::Initialize(const void* shader_byte_code, size_t byte_code_siz
     return true;
 }
 
-ID3D11VertexShader* VertexShader::GetShader()
+ID3D11VertexShader* VertexShader::GetShader() const
 {
     return this->m_vs;
 }

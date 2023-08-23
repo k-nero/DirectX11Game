@@ -1,9 +1,7 @@
 #include "GraphicsEngine.h"
 
 GraphicsEngine::GraphicsEngine()
-{
-
-}
+= default;
 
 bool GraphicsEngine::Initialize()
 {
@@ -23,16 +21,14 @@ bool GraphicsEngine::Initialize()
 	creationFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE;
 #endif
 
-	HRESULT hr;
-	for (unsigned driverTypeIndex = 0; driverTypeIndex < ARRAYSIZE(driverTypes); driverTypeIndex++)
+	for (auto m_driverType : driverTypes)
 	{
-		auto m_driverType = driverTypes[driverTypeIndex];
-		hr = D3D11CreateDevice(NULL, m_driverType, NULL, creationFlags, featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_featureLevel, &deviceContext);
+		const HRESULT hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels,ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_featureLevel, &deviceContext);
 		if (SUCCEEDED(hr))
 		{
-			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**) &m_pDXGIDevice);
-			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**) &m_pDXGIAdapter);
-			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**) &m_pDXGIFactory);
+			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&m_pDXGIDevice));
+			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&m_pDXGIAdapter));
+			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&m_pDXGIFactory));
 			m_pDeviceContext = new DeviceContext(deviceContext);
 			return true;
 		}
@@ -101,7 +97,7 @@ SwapChain* GraphicsEngine::CreateSwapChain()
 	return new SwapChain();
 }
 
-DeviceContext* GraphicsEngine::GetImmediateDeviceContext()
+DeviceContext* GraphicsEngine::GetImmediateDeviceContext() const
 {
 	return m_pDeviceContext;
 }
@@ -113,7 +109,7 @@ VertexBuffer* GraphicsEngine::CreateVertexBuffer()
 
 VertexShader* GraphicsEngine::CreateVertexShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	VertexShader* vs = new VertexShader();
+	auto* vs = new VertexShader();
 	if (!vs->Initialize(shader_byte_code, byte_code_size))
 	{
 		vs->Release();
@@ -124,7 +120,7 @@ VertexShader* GraphicsEngine::CreateVertexShader(const void* shader_byte_code, s
 
 PixelShader* GraphicsEngine::CreatePixelShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	PixelShader* ps = new PixelShader();
+	auto* ps = new PixelShader();
 	if (!ps->Initialize(shader_byte_code, byte_code_size))
 	{
 		ps->Release();
@@ -179,7 +175,7 @@ void GraphicsEngine::ReleaseCompiledShader()
 	}
 }
 
-ID3D11Device* GraphicsEngine::GetDevice()
+ID3D11Device* GraphicsEngine::GetDevice() const
 {
 	return m_pDevice;
 }
