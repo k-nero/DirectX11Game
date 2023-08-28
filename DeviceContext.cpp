@@ -64,9 +64,5 @@ void DeviceContext::Release()
 
 DeviceContext::~DeviceContext()
 {
-	if (m_deviceContext)
-	{
-		m_deviceContext->Release();
-		m_deviceContext = nullptr;
-	}
+	
 }

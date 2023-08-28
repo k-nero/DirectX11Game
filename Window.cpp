@@ -1,31 +1,28 @@
 #include "Window.h"
 
-Window::Window()
-{
-
-}
+Window::Window() = default;
 
 __int64 _stdcall WndProc(HWND hWnd, unsigned int  message, unsigned __int64 wParam, __int64 lParam)
 {
 	switch (message)
 	{
-		case WM_CREATE:
+		case 0x0001U:
 		{
 			Window* window = (Window*) ((LPCREATESTRUCTW) lParam)->lpCreateParams;
-			SetWindowLongPtr(hWnd, GWLP_USERDATA, (__int64) window);
+			SetWindowLongPtrW(hWnd, (-21), (__int64) window);
 			window->SetHWND(hWnd);
 			window->OnCreate();
 			break;
 		}
-		case WM_DESTROY:
+		case 0x0002U:
 		{
-			Window* window = (Window*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
+			Window* window = (Window*) GetWindowLongPtrW(hWnd, -21);
 			window->OnDestroy();
 			PostQuitMessage(0);
 			break;
 		}
 	}
-	return DefWindowProc(hWnd, message, wParam, lParam);
+	return DefWindowProcW(hWnd, message, wParam, lParam);
 }
 
 bool Window::Initialize()
@@ -44,19 +41,19 @@ bool Window::Initialize()
 	wc.style = 0x0003U;
 	wc.lpfnWndProc = &WndProc;
 
-	if (!RegisterClassEx(&wc))
+	if (!RegisterClassExW(&wc))
 	{
 		return false;
 	}
 
-	m_hWnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"CXWindow", L"DirectX 11 Game", ( 0x00CBF2EDL ), ((int) 0x80000000), ((int) 0x80000000), 1280, 720, 0, 0, 0, this);
+	m_hWnd = CreateWindowExW(( 0x00000300L ), L"CXWindow", L"DirectX 11 Game", (0x00CBF2EDL), ((int) 0x80000000), ((int) 0x80000000), 1280, 720, 0, 0, 0, this);
 
 	if (m_hWnd == 0)
 	{
 		return false;
 	}
 
-	ShowWindow(m_hWnd, SW_SHOW);
+	ShowWindow(m_hWnd, 0x5);
 	UpdateWindow(m_hWnd);
 	m_isRunning = true;
 
@@ -65,12 +62,12 @@ bool Window::Initialize()
 
 void Window::Broadcast()
 {
-	MSG msg{};
+	tagMSG msg{};
 	this->OnUpdate();
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0)
+	while (PeekMessageW(&msg, 0, 0x0U, 0x0U, 0x0001U) > 0)
 	{
 		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		DispatchMessageW(&msg);
 	}
 }
 
@@ -95,7 +92,7 @@ void Window::SetHWND(HWND hwnd)
 
 RECT Window::GetClient() const
 {
-	RECT rc{};
+	tagRECT rc{};
 	GetClientRect(this->m_hWnd, &rc);
 	return rc;
 }
@@ -115,7 +112,4 @@ void Window::OnUpdate()
 
 }
 
-Window::~Window()
-{
-
-}
+Window::~Window() = default;

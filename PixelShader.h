@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphicsEngine.h"
+#include <wrl/client.h>
 
 class PixelShader
 {
@@ -11,6 +12,6 @@ public:
 public:
 	ID3D11PixelShader* GetShader() const;
 private:
-	ID3D11PixelShader* m_ps = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps = nullptr;
 };
 

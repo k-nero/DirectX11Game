@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphicsEngine.h"
+#include <wrl/client.h>
 
 class SwapChain
 {
@@ -12,8 +13,8 @@ public:
 	void Release();
 	~SwapChain();
 private:
-	IDXGISwapChain* m_swapChain = nullptr;
-	ID3D11RenderTargetView* m_rtv = nullptr;
-	ID3D11DepthStencilView* m_dsv = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_rtv = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_dsv = nullptr;
 };
 

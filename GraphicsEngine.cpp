@@ -1,5 +1,6 @@
 #include "GraphicsEngine.h"
 
+
 GraphicsEngine::GraphicsEngine()
 = default;
 
@@ -20,22 +21,22 @@ bool GraphicsEngine::Initialize()
 #if defined(_DEBUG)
 	creationFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE;
 #endif
-
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
 	for (auto m_driverType : driverTypes)
 	{
-		const long hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels, (sizeof(*RtlpNumberOf(featureLevels))), (0x7U), &m_pDevice, &m_featureLevel, &deviceContext);
+		const auto hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels, (sizeof(*RtlpNumberOf(featureLevels))), (0x7U), &m_pDevice, &m_featureLevel, &deviceContext);
 		if (hr >= 0x0L)
 		{
-			m_pDeviceContext = new DeviceContext(deviceContext);
-
+			m_pDeviceContext = new DeviceContext(deviceContext.Get());
+			 
 			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**) &m_pDXGIDevice);
-			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**) &m_pDXGIAdapter);
-			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**) &m_pDXGIFactory);
+			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), IID_PPV_ARGS_Helper(&m_pDXGIAdapter));
+			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), IID_PPV_ARGS_Helper(&m_pDXGIFactory));
 #if defined(_DEBUG)
 			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**) &m_debug);
 			m_debug->SetFeatureMask(0x3U);
 			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
-			m_debug->ValidateContext(deviceContext);
+			m_debug->ValidateContext(deviceContext.Get());
 			//m_debug->ValidateContextForDispatch(deviceContext);
 
 			// create info queue object
@@ -59,62 +60,10 @@ void GraphicsEngine::Shutdown()
 
 GraphicsEngine::~GraphicsEngine()
 {
-	if(pInfoQueue)
-	{
-		pInfoQueue->Release();
-		pInfoQueue = nullptr;
-	}
-	if(m_debug)
-	{
-		m_debug->Release();
-		m_debug = nullptr;
-	}
-	if (m_vs)
-	{
-		m_vs->Release();
-		m_vs = nullptr;
-	}
-
-	if (m_ps)
-	{
-		m_ps->Release();
-		m_ps = nullptr;
-	}
-	if (m_vsblob)
-	{
-		m_vsblob->Release();
-		m_vsblob = nullptr;
-	}
-	if (m_psblob)
-	{
-		m_psblob->Release();
-		m_psblob = nullptr;
-	}
-
-	if (m_pDXGIFactory)
-	{
-		m_pDXGIFactory->Release();
-		m_pDXGIFactory = nullptr;
-	}
-	if (m_pDXGIAdapter)
-	{
-		m_pDXGIAdapter->Release();
-		m_pDXGIAdapter = nullptr;
-	}
-	if (m_pDXGIDevice)
-	{
-		m_pDXGIDevice->Release();
-		m_pDXGIDevice = nullptr;
-	}
 	if (m_pDeviceContext)
 	{
 		m_pDeviceContext->Release();
 		m_pDeviceContext = nullptr;
-	}
-	if (m_pDevice)
-	{
-		m_pDevice->Release();
-		m_pDevice = nullptr;
 	}
 }
 
@@ -157,7 +106,7 @@ PixelShader* GraphicsEngine::CreatePixelShader(const void* shader_byte_code, siz
 
 bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
 {
-	ID3DBlob* error_blob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
 	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "ps_5_0", NULL, NULL, &m_blob, &error_blob);
 	if (FAILED(hr) || error_blob)
 	{
@@ -165,7 +114,6 @@ bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* en
 		{
 			std::string errorMessage = (char*) error_blob->GetBufferPointer();
 			OutputDebugStringA(errorMessage.c_str());
-			error_blob->Release();
 			return false;
 		}
 		return false;
@@ -177,7 +125,7 @@ bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* en
 
 bool GraphicsEngine::CompileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
 {
-	ID3DBlob* error_blob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
 	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "vs_5_0", NULL, NULL, &m_blob, &error_blob);
 	if (FAILED(hr) || error_blob)
 	{
@@ -185,7 +133,7 @@ bool GraphicsEngine::CompileVertexShader(const wchar_t* file_name, const char* e
 		{
 			std::string errorMessage = (char*) error_blob->GetBufferPointer();
 			OutputDebugStringA(errorMessage.c_str());
-			error_blob->Release();
+			return false;
 		}
 		return false;
 	}
@@ -207,22 +155,17 @@ void GraphicsEngine::ReleaseCompiledShader()
 
 ID3D11InfoQueue* GraphicsEngine::GetInfoQueue() const
 {
-	return pInfoQueue;
+	return pInfoQueue.Get();
 }
 
 ID3D11Device* GraphicsEngine::GetDevice() const
 {
-	return m_pDevice;
+	return m_pDevice.Get();
 }
 
 IDXGIFactory* GraphicsEngine::GetDXGIFactory()
 {
-	return m_pDXGIFactory;
-}
-
-ID3D11DeviceContext* GraphicsEngine::GetDeviceContext()
-{
-	return this->deviceContext;
+	return m_pDXGIFactory.Get();
 }
 
 GraphicsEngine* GraphicsEngine::Get()

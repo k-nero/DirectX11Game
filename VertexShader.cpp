@@ -1,31 +1,22 @@
 #include "VertexShader.h"
 
-VertexShader::VertexShader()
-= default;
+VertexShader::VertexShader() = default;
 
 void VertexShader::Release()
 {
-   if (m_vs)m_vs->Release();
-   m_vs = nullptr;
+   VertexShader::~VertexShader();
    delete this;
 }
 
-VertexShader::~VertexShader()
-{
-    if (m_vs)m_vs->Release();
-}
+VertexShader::~VertexShader() = default;
 
 bool VertexShader::Initialize(const void* shader_byte_code, size_t byte_code_size)
 {
-    if (!SUCCEEDED(GraphicsEngine::Get()->GetDevice()->CreateVertexShader(shader_byte_code, byte_code_size, nullptr, &m_vs)))
-    {
-		return false;
-	}
-
-    return true;
+    auto hr = GraphicsEngine::Get()->GetDevice()->CreateVertexShader(shader_byte_code, byte_code_size, nullptr, &m_vs);
+    return hr >= 0x0L ? true : false;
 }
 
 ID3D11VertexShader* VertexShader::GetShader() const
 {
-    return this->m_vs;
+    return m_vs.Get();
 }

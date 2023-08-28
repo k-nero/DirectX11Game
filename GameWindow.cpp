@@ -65,7 +65,7 @@ void GameWindow::OnCreate()
 	g_pGraphics_engine->ReleaseCompiledShader();
 
 #if defined(_DEBUG)
-	auto infoQueue = g_pGraphics_engine->GetInfoQueue();
+	Microsoft::WRL::ComPtr<ID3D11InfoQueue> infoQueue = g_pGraphics_engine->GetInfoQueue();
 	UINT64 numStoredMessages = infoQueue->GetNumStoredMessages();
 	for (UINT64 i = 0; i < numStoredMessages; i++)
 	{
@@ -77,7 +77,6 @@ void GameWindow::OnCreate()
 		free(pMessage);
 	}
 	infoQueue->ClearStoredMessages();
-	infoQueue = nullptr;
 #endif
 }
 

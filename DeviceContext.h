@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11.h>
 #include "GraphicsEngine.h"
+#include <wrl/client.h>
 
 class VertexBuffer;
 class VertexShader;
@@ -20,6 +21,6 @@ public:
 	void Release();
 	~DeviceContext();
 private:
-	ID3D11DeviceContext* m_deviceContext = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext = nullptr;
 };
 

@@ -1,7 +1,6 @@
 #include "VertexBuffer.h"
 
-VertexBuffer::VertexBuffer()
-= default;
+VertexBuffer::VertexBuffer() = default;
 
 bool VertexBuffer::Load(const void* list_vertices, unsigned int size_vertex, unsigned int size_list, const void* shader_byte_code, size_t size_byte_shader)
 {
@@ -18,10 +17,11 @@ bool VertexBuffer::Load(const void* list_vertices, unsigned int size_vertex, uns
 	this->m_vertex_size = size_vertex;
 	this->m_vertext_list_size = size_list;
 
-	if(FAILED(graphEngine->GetDevice()->CreateBuffer(&buffDesc, &init_data, &m_buffer)))
+	if((graphEngine->GetDevice()->CreateBuffer(&buffDesc, &init_data, &m_buffer) < 0x0L))
 	{
 		return false;
 	}
+
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -30,7 +30,7 @@ bool VertexBuffer::Load(const void* list_vertices, unsigned int size_vertex, uns
 	unsigned size_layout = ARRAYSIZE(layout);
 
 	auto hr = graphEngine->GetDevice()->CreateInputLayout(layout, size_layout, shader_byte_code, size_byte_shader, &m_layout);
-	return SUCCEEDED(hr) ? true : false;
+	return hr >= 0x0L ? true : false;
 }
 
 void VertexBuffer::Release()
@@ -39,19 +39,7 @@ void VertexBuffer::Release()
 	delete this;
 }
 
-VertexBuffer::~VertexBuffer()
-{
-	if (m_layout)
-	{
-		m_layout->Release();
-		m_layout = nullptr;
-	}
-	if (m_buffer)
-	{
-		m_buffer->Release();
-		m_buffer = nullptr;
-	}
-}
+VertexBuffer::~VertexBuffer() = default;
 
 unsigned VertexBuffer::GetVertexListSize() const
 {
@@ -65,10 +53,10 @@ unsigned int VertexBuffer::GetVertexSize() const
 
 ID3D11Buffer* VertexBuffer::GetBuffer() const
 {
-	return m_buffer;
+	return m_buffer.Get();
 }
 
 ID3D11InputLayout* VertexBuffer::GetLayout() const
 {
-	return m_layout;
+	return m_layout.Get();
 }

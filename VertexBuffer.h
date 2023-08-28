@@ -1,5 +1,6 @@
 #pragma once
 #include "GraphicsEngine.h"
+#include <wrl/client.h>
 
 class VertexBuffer 
 {
@@ -17,8 +18,8 @@ private:
 	unsigned int m_vertex_size = 0;
 	unsigned int m_vertext_list_size = 0;
 private:
-	ID3D11Buffer* m_buffer = nullptr;
-	ID3D11InputLayout* m_layout = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_layout = nullptr;
 
 };
 
