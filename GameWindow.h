@@ -7,6 +7,7 @@
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "ConstantBuffer.h"
 
 class GameWindow : public Window
 {
@@ -25,5 +26,6 @@ private:
 	VertexBuffer* m_vb = nullptr;
 	VertexShader* m_vs = nullptr;
 	PixelShader* m_ps = nullptr;
+	ConstantBuffer* m_cb = nullptr;
 };
 

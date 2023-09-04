@@ -2,34 +2,40 @@
 
 VertexBuffer::VertexBuffer() = default;
 
-bool VertexBuffer::Load(const void* list_vertices, unsigned int size_vertex, unsigned int size_list, const void* shader_byte_code, size_t size_byte_shader)
+bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned int list_size, const void* shader_byte_code, size_t shader_byte_size)
 {
-	if (m_buffer)m_buffer->Release();
+	//if (m_buffer)m_buffer->Release();
 	if (m_layout)m_layout->Release();
 
-	GraphicsEngine* graphEngine = GraphicsEngine::Get();
+	GraphicsEngine* graphicEngine = GraphicsEngine::Get();
 
-	D3D11_BUFFER_DESC buffDesc = { size_vertex * size_list, D3D11_USAGE_DEFAULT, D3D11_BIND_VERTEX_BUFFER, 0, 0 };
+	D3D11_BUFFER_DESC buffDesc = { vertex_size * list_size, D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0 };
 
-	D3D11_SUBRESOURCE_DATA init_data = {};
-	init_data.pSysMem = list_vertices;
+	D3D11_MAPPED_SUBRESOURCE init_data = {};
 
-	this->m_vertex_size = size_vertex;
-	this->m_vertext_list_size = size_list;
+	this->m_vertex_size = vertex_size;
+	this->m_vertext_list_size = list_size;
 
-	if((graphEngine->GetDevice()->CreateBuffer(&buffDesc, &init_data, &m_buffer) < 0x0L))
+	if (!m_buffer)
 	{
-		return false;
+		if ((graphicEngine->GetDevice()->CreateBuffer(&buffDesc, NULL, &m_buffer) < 0x0L))
+		{
+			return false;
+		}
 	}
+
+	graphicEngine->GetImmediateDeviceContext()->GetDeviceContext()->Map(m_buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &init_data);
+	memcpy(init_data.pData, list_vertices, static_cast<size_t>(vertex_size * list_size));
+	graphicEngine->GetImmediateDeviceContext()->GetDeviceContext()->Unmap(m_buffer.Get(), NULL);
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
-	unsigned size_layout = ARRAYSIZE(layout);
+	unsigned size_layout = (sizeof(*RtlpNumberOf(layout)));
 
-	auto hr = graphEngine->GetDevice()->CreateInputLayout(layout, size_layout, shader_byte_code, size_byte_shader, &m_layout);
+	auto hr = graphicEngine->GetDevice()->CreateInputLayout(layout, size_layout, shader_byte_code, shader_byte_size, &m_layout);
 	return hr >= 0x0L ? true : false;
 }
 

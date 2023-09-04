@@ -10,6 +10,11 @@ struct VS_OUTPUT
     float3 Color : COLOR;
 };
 
+cbuffer constant: register(b0)
+{
+    unsigned int time;
+}
+
 VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;

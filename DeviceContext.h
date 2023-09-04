@@ -6,6 +6,7 @@
 class VertexBuffer;
 class VertexShader;
 class PixelShader;
+class ConstantBuffer;
 
 class DeviceContext
 {
@@ -18,8 +19,12 @@ public:
 	void DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex) const;
 	void DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex) const;
 	void SetViewportSize(unsigned width, unsigned height) const;
+	void SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const;
+	void SetConstantBuffer(PixelShader* pixelShader, ConstantBuffer* buffer) const;
 	void Release();
 	~DeviceContext();
+public:
+	ID3D11DeviceContext* GetDeviceContext();
 private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext = nullptr;
 };

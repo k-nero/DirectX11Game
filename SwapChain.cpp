@@ -1,13 +1,12 @@
 #include "SwapChain.h"
 #include <wrl/client.h>
 
-SwapChain::SwapChain()
-= default;
+SwapChain::SwapChain() = default;
 
 bool SwapChain::Initialize(HWND hwnd, unsigned int width, unsigned int height, bool fullscreen)
 {
 
-	ID3D11Device* m_pDevice = GraphicsEngine::Get()->GetDevice();
+	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice = GraphicsEngine::Get()->GetDevice();
 	DXGI_SWAP_CHAIN_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 	desc.BufferCount = 2;
@@ -23,22 +22,21 @@ bool SwapChain::Initialize(HWND hwnd, unsigned int width, unsigned int height, b
 	desc.Windowed = !fullscreen;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	__int64 hr = GraphicsEngine::Get()->GetDXGIFactory()->CreateSwapChain(m_pDevice, &desc, &m_swapChain);
+	__int64 hr = GraphicsEngine::Get()->GetDXGIFactory()->CreateSwapChain(m_pDevice.Get(), &desc, &m_swapChain);
 
 	if (hr < 0x0L)
 	{
 		return false;
 	}
 
-	ID3D11Texture2D* m_buffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_buffer = nullptr;
 	hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&m_buffer);
 	if (hr < 0x0L)
 	{
 		return false;
 	}
 
-	hr = m_pDevice->CreateRenderTargetView(m_buffer, nullptr, &m_rtv);
-	m_buffer->Release();
+	hr = m_pDevice->CreateRenderTargetView(m_buffer.Get(), nullptr, &m_rtv);
 
 	if (hr < 0x0L)
 	{

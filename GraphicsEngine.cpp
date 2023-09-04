@@ -39,8 +39,6 @@ bool GraphicsEngine::Initialize()
 			m_debug->ValidateContext(deviceContext.Get());
 			//m_debug->ValidateContextForDispatch(deviceContext);
 
-			// create info queue object
-			
 			if ((m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**) &pInfoQueue)) >= 0x0L)
 			{
 				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -56,6 +54,7 @@ bool GraphicsEngine::Initialize()
 void GraphicsEngine::Shutdown()
 {
 	GraphicsEngine::~GraphicsEngine();
+	//delete this;
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -80,6 +79,11 @@ DeviceContext* GraphicsEngine::GetImmediateDeviceContext() const
 VertexBuffer* GraphicsEngine::CreateVertexBuffer()
 {
 	return new VertexBuffer();
+}
+
+ConstantBuffer* GraphicsEngine::CreateConstantBuffer()
+{
+	return new ConstantBuffer();
 }
 
 VertexShader* GraphicsEngine::CreateVertexShader(const void* shader_byte_code, size_t byte_code_size)
