@@ -25,7 +25,7 @@ bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned
 	}
 	
 	graphicEngine->GetImmediateDeviceContext()->GetDeviceContext()->Map(m_buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &init_data);
-	memcpy(init_data.pData, list_vertices, static_cast<size_t>(vertex_size * list_size));
+	memcpy(init_data.pData, list_vertices, vertex_size * list_size);
 	graphicEngine->GetImmediateDeviceContext()->GetDeviceContext()->Unmap(m_buffer.Get(), NULL);
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =

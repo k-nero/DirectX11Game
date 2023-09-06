@@ -111,12 +111,17 @@ PixelShader* GraphicsEngine::CreatePixelShader(const void* shader_byte_code, siz
 bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
-	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "ps_5_0", NULL, NULL, &m_blob, &error_blob);
+	unsigned int flag =  D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined (_DEBUG)
+	flag |= D3DCOMPILE_DEBUG;
+#endif
+
+	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "ps_5_0", flag, NULL, &m_blob, &error_blob);
 	if (FAILED(hr) || error_blob)
 	{
 		if (error_blob)
 		{
-			std::string errorMessage = (char*) error_blob->GetBufferPointer();
+			const std::string errorMessage = (char*) error_blob->GetBufferPointer();
 			OutputDebugStringA(errorMessage.c_str());
 			return false;
 		}
@@ -130,12 +135,16 @@ bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* en
 bool GraphicsEngine::CompileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
-	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "vs_5_0", NULL, NULL, &m_blob, &error_blob);
+	unsigned int flag =  D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined (_DEBUG)
+	flag |= D3DCOMPILE_DEBUG;
+#endif
+	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "vs_5_0", flag, NULL, &m_blob, &error_blob);
 	if (FAILED(hr) || error_blob)
 	{
 		if (error_blob)
 		{
-			std::string errorMessage = (char*) error_blob->GetBufferPointer();
+			const std::string errorMessage = (char*) error_blob->GetBufferPointer();
 			OutputDebugStringA(errorMessage.c_str());
 			return false;
 		}
