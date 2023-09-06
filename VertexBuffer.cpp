@@ -18,12 +18,12 @@ bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned
 
 	if (!m_buffer)
 	{
-		if ((graphicEngine->GetDevice()->CreateBuffer(&buffDesc, NULL, &m_buffer) < 0x0L))
+		if ((graphicEngine->GetDevice()->CreateBuffer(&buffDesc, nullptr, &m_buffer) < 0x0L))
 		{
 			return false;
 		}
 	}
-
+	
 	graphicEngine->GetImmediateDeviceContext()->GetDeviceContext()->Map(m_buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &init_data);
 	memcpy(init_data.pData, list_vertices, static_cast<size_t>(vertex_size * list_size));
 	graphicEngine->GetImmediateDeviceContext()->GetDeviceContext()->Unmap(m_buffer.Get(), NULL);
@@ -31,7 +31,7 @@ bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 	unsigned size_layout = (sizeof(*RtlpNumberOf(layout)));
 

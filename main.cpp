@@ -22,9 +22,9 @@ int __stdcall WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ P
 			game.Broadcast();
 		}
 	}
-	return 0;
 
 #if defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif
+	return 0;
 }

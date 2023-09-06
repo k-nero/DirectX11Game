@@ -22,7 +22,7 @@ bool GraphicsEngine::Initialize()
 	creationFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE;
 #endif
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
-	for (auto m_driverType : driverTypes)
+	for (const auto m_driverType : driverTypes)
 	{
 		const auto hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels, (sizeof(*RtlpNumberOf(featureLevels))), (0x7U), &m_pDevice, &m_featureLevel, &deviceContext);
 		if (hr >= 0x0L)
