@@ -20,6 +20,7 @@ public:
 	void SetVertexShader(VertexShader* vertexShader) const;
 	void SetPixelShader(PixelShader* pixelShader) const;
 	void DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex) const;
+	void DrawIndexedTriangleList(unsigned indexCount, unsigned startIndexLocation, unsigned startVertexLocation) const;
 	void DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex) const;
 	void SetViewportSize(unsigned width, unsigned height) const;
 	void SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const;

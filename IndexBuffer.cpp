@@ -16,15 +16,11 @@ bool IndexBuffer::Load(void* list_indices, UINT size_list)
 
 	D3D11_SUBRESOURCE_DATA data = {};
 	data.pSysMem = list_indices;
+	this->m_size_list = size_list;
 
 	auto hr = GraphicsEngine::Get()->GetDevice()->CreateBuffer(&desc, &data, &m_buffer);
 
 	return hr >= 0x0L ? true : false;
-}
-
-unsigned int IndexBuffer::GetIndexListSize() const
-{
-	return 0;
 }
 
 void IndexBuffer::Release()
@@ -38,4 +34,9 @@ IndexBuffer::~IndexBuffer() = default;
 ID3D11Buffer* IndexBuffer::GetBuffer()
 {
 	return this->m_buffer.Get();
+}
+
+unsigned int IndexBuffer::GetIndexListSize() const
+{
+	return this->m_size_list;
 }

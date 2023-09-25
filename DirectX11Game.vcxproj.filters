@@ -34,6 +34,15 @@
     <Filter Include="Engine\Graphic\Shaders">
       <UniqueIdentifier>{4414a172-0b6f-48b6-b6ea-6f83540dffd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Input System">
+      <UniqueIdentifier>{123abbd2-26cf-4845-95cd-379b0d3a6c1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input System\Header Files">
+      <UniqueIdentifier>{040cf52d-9eb1-40cd-9bb4-3be1f441a487}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input System\Source Files">
+      <UniqueIdentifier>{1b7b51f8-da25-4386-9387-6037292961c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +78,9 @@
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>Engine\Graphic\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Engine\Input System\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -100,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>Engine\Graphic\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
+      <Filter>Engine\Input System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IInputListener.h">
+      <Filter>Engine\Input System\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

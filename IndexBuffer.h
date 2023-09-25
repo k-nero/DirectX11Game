@@ -15,6 +15,6 @@ public:
 	ID3D11Buffer* GetBuffer();
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
-
+	unsigned int m_size_list = 0;
 };
 

@@ -20,12 +20,15 @@ GameWindow::GameWindow() = default;
 
 GameWindow::~GameWindow()
 {
-	
+
 }
 
 void GameWindow::OnCreate()
 {
 	Window::OnCreate();
+
+	InputSystem::Get()->AddListener(this);
+
 	g_pGraphics_engine = GraphicsEngine::Get();
 	g_pGraphics_engine->Initialize();
 	m_swap_chain = g_pGraphics_engine->CreateSwapChain();
@@ -34,13 +37,39 @@ void GameWindow::OnCreate()
 
 	Vertex list[] =
 	{
-		{ XMFLOAT3{-0.5f, -0.5f, 0.0f}, XMFLOAT3{1, 0, 0} },
-		{ XMFLOAT3{-0.5f, 0.5f, 0.0f}, XMFLOAT3{0, 1, 0} },
-		{ XMFLOAT3{0.5f, -0.5f, 0.0f}, XMFLOAT3{0, 0, 1} },
-		{ XMFLOAT3{0.5f, 0.5f, 0.0f}, XMFLOAT3{1, 1, 1} }
+		{ XMFLOAT3{-0.5f, -0.5f, -0.5f}, XMFLOAT3{1, 0, 0}},
+		{ XMFLOAT3{-0.5f, 0.5f, -0.5f}, XMFLOAT3{0, 1, 0} },
+		{ XMFLOAT3{0.5f, 0.5f, -0.5f}, XMFLOAT3{0, 0, 1} },
+		{ XMFLOAT3{0.5f, -0.5f, -0.5f}, XMFLOAT3{1, 1, 1} },
+		{ XMFLOAT3{0.5f, -0.5f, 0.5f}, XMFLOAT3{1, 1, 1} },
+		{ XMFLOAT3{0.5f, 0.5f, 0.5f}, XMFLOAT3{0, 0, 1} },
+		{ XMFLOAT3{-0.5f, 0.5f, 0.5f}, XMFLOAT3{0, 1, 0} },
+		{ XMFLOAT3{-0.5f, -0.5f, 0.5f}, XMFLOAT3{1, 0, 0}},
 	};
 
+	unsigned int index_list[] =
+	{
+		0, 1, 2,
+		2, 3, 0,
+
+		4, 5, 6,
+		6, 7, 4,
+
+		1, 6, 5,
+		5, 2, 1,
+
+		7, 0, 3,
+		3, 4, 7,
+
+		3, 2, 5,
+		5, 4, 3,
+
+		7, 6, 1,
+		1, 0, 7,
+	};
+	unsigned int index_list_size = (sizeof(*RtlpNumberOf(index_list)));
 	m_ib = g_pGraphics_engine->CreateIndexBuffer();
+	m_ib->Load(index_list, index_list_size);
 
 	m_vb = g_pGraphics_engine->CreateVertexBuffer();
 
@@ -55,7 +84,7 @@ void GameWindow::OnCreate()
 	m_ps = g_pGraphics_engine->CreatePixelShader(shader_byte_code, size_shader);
 	g_pGraphics_engine->ReleaseCompiledShader();
 
-	constant cbuffer = {0};
+	constant cbuffer = { 0 };
 	m_cb = g_pGraphics_engine->CreateConstantBuffer();
 	m_cb->Load(&cbuffer, sizeof(constant));
 }
@@ -70,16 +99,16 @@ void GameWindow::OnUpdate()
 {
 	Window::OnUpdate();
 	RECT rc = this->GetClient();
-
+	InputSystem::Get()->Update();
 	auto context = g_pGraphics_engine->GetImmediateDeviceContext();
 	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
 	constant cbuffer{};
 	cbuffer.time = 0.6f;
-	cbuffer.m_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	cbuffer.m_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f) * XMMatrixScaling(1, 1, 1) * XMMatrixRotationY(m_rot_y) * XMMatrixRotationX(m_rot_x);
 	cbuffer.m_view = XMMatrixIdentity();
-	cbuffer.m_projection = XMMatrixOrthographicLH((rc.right - rc.left)/400.0f, (rc.bottom - rc.top)/200.0f, 4, -4);
+	cbuffer.m_projection = XMMatrixOrthographicLH((rc.right - rc.left) / 300.0f, (rc.bottom - rc.top) / 300.0f, 4, -4);
 	m_cb->Update(context, &cbuffer);
 
 	context->SetConstantBuffer(m_vs.get(), m_cb.get());
@@ -88,8 +117,40 @@ void GameWindow::OnUpdate()
 	context->SetVertexShader(m_vs.get());
 	context->SetPixelShader(m_ps.get());
 	context->SetVertexBuffer(m_vb.get());
-	context->DrawTriangleStrip(m_vb->GetVertexListSize(), 0);
+	context->SetIndexBuffer(m_ib.get());
+	context->DrawIndexedTriangleList(m_ib.get()->GetIndexListSize(), 0, 0);
 
 	m_swap_chain->Present(true);
+
+	m_old_time = m_new_time;
+	m_new_time = GetTickCount();
+
+	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
+
 	context = nullptr;
+}
+
+void GameWindow::OnKeyDown(int key)
+{
+	if (key == 'W')
+	{
+		m_rot_x += 0.2f * m_delta_time;
+	}
+	else if(key == 'S')
+	{
+		m_rot_x -= 0.2f * m_delta_time;
+	}
+	else if(key == 'A')
+	{
+		m_rot_y += 0.2f * m_delta_time;
+	}
+	else if (key == 'D')
+	{
+		m_rot_y -= 0.2f * m_delta_time;
+	}
+}
+
+void GameWindow::OnKeyUp(int key)
+{
+
 }

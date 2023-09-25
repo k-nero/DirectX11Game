@@ -9,8 +9,10 @@
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "ConstantBuffer.h"
+#include "IInputListener.h"
+#include "InputSystem.h"
 
-class GameWindow : public Window
+class GameWindow : public Window, public IInputListener
 {
 public: 
 	GameWindow();
@@ -20,6 +22,10 @@ public:
 	void OnCreate() override;
 	void OnDestroy() override;
 	void OnUpdate() override;
+
+	// Inherited via IInputListener
+	void OnKeyDown(int key) override;
+	void OnKeyUp(int key) override;
 private:
 	GraphicsEngine* g_pGraphics_engine = nullptr;
 private:
@@ -29,5 +35,13 @@ private:
 	std::shared_ptr<PixelShader> m_ps = nullptr;
 	std::shared_ptr<ConstantBuffer> m_cb = nullptr;
 	std::shared_ptr<IndexBuffer> m_ib = nullptr;
+
+private:
+	float m_rot_x = 0.0f;
+	float m_rot_y = 0.0f;
+
+	DWORD m_old_time = 0;
+	DWORD m_new_time = 0;
+	float m_delta_time = 0.0f;
 };
 

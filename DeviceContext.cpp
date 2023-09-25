@@ -43,6 +43,12 @@ void DeviceContext::DrawTriangleList(unsigned vertexCount, unsigned startVertexI
 	m_deviceContext->Draw(vertexCount, startVertexIndex);
 }
 
+void DeviceContext::DrawIndexedTriangleList(unsigned indexCount, unsigned startIndexLocation, unsigned startVertexLocation) const
+{
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_deviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexLocation);
+}
+
 void DeviceContext::DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex) const
 {
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
