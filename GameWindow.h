@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include <memory>
 #include "Window.h"
 #include "GraphicsEngine.h"
 #include "SwapChain.h"
@@ -22,10 +23,11 @@ public:
 private:
 	GraphicsEngine* g_pGraphics_engine = nullptr;
 private:
-	SwapChain * m_swap_chain = nullptr;
-	VertexBuffer* m_vb = nullptr;
-	VertexShader* m_vs = nullptr;
-	PixelShader* m_ps = nullptr;
-	ConstantBuffer* m_cb = nullptr;
+	std::shared_ptr<SwapChain> m_swap_chain = nullptr;
+	std::shared_ptr<VertexBuffer> m_vb = nullptr;
+	std::shared_ptr<VertexShader> m_vs = nullptr;
+	std::shared_ptr<PixelShader> m_ps = nullptr;
+	std::shared_ptr<ConstantBuffer> m_cb = nullptr;
+	std::shared_ptr<IndexBuffer> m_ib = nullptr;
 };
 

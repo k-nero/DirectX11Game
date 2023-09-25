@@ -27,19 +27,19 @@ bool GraphicsEngine::Initialize()
 		const auto hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels, (sizeof(*RtlpNumberOf(featureLevels))), (0x7U), &m_pDevice, &m_featureLevel, &deviceContext);
 		if (hr >= 0x0L)
 		{
-			m_pDeviceContext = new DeviceContext(deviceContext.Get());
+			m_pDeviceContext = std::make_shared<DeviceContext>(deviceContext.Get());
 			 
-			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**) &m_pDXGIDevice);
+			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), IID_PPV_ARGS_Helper(&m_pDXGIDevice));
 			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), IID_PPV_ARGS_Helper(&m_pDXGIAdapter));
 			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), IID_PPV_ARGS_Helper(&m_pDXGIFactory));
 #if defined(_DEBUG)
-			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**) &m_debug);
+			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), IID_PPV_ARGS_Helper(&m_debug));
 			m_debug->SetFeatureMask(0x3U);
 			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
 			m_debug->ValidateContext(deviceContext.Get());
 			//m_debug->ValidateContextForDispatch(deviceContext);
 
-			if ((m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**) &pInfoQueue)) >= 0x0L)
+			if ((m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), IID_PPV_ARGS_Helper(&pInfoQueue))) >= 0x0L)
 			{
 				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
 				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
@@ -59,50 +59,49 @@ void GraphicsEngine::Shutdown()
 
 GraphicsEngine::~GraphicsEngine()
 {
-	if (m_pDeviceContext)
-	{
-		m_pDeviceContext->Release();
-		m_pDeviceContext = nullptr;
-	}
+
 }
 
-SwapChain* GraphicsEngine::CreateSwapChain()
+std::shared_ptr<SwapChain> GraphicsEngine::CreateSwapChain()
 {
-	return new SwapChain();
+	return std::make_shared<SwapChain>();
+}
+
+std::shared_ptr<IndexBuffer> GraphicsEngine::CreateIndexBuffer()
+{
+	return std::make_shared<IndexBuffer>();
 }
 
 DeviceContext* GraphicsEngine::GetImmediateDeviceContext() const
 {
-	return m_pDeviceContext;
+	return m_pDeviceContext.get();
 }
 
-VertexBuffer* GraphicsEngine::CreateVertexBuffer()
+std::shared_ptr<VertexBuffer> GraphicsEngine::CreateVertexBuffer()
 {
-	return new VertexBuffer();
+	return std::make_shared<VertexBuffer>();
 }
 
-ConstantBuffer* GraphicsEngine::CreateConstantBuffer()
+std::shared_ptr<ConstantBuffer> GraphicsEngine::CreateConstantBuffer()
 {
-	return new ConstantBuffer();
+	return std::make_shared<ConstantBuffer>();
 }
 
-VertexShader* GraphicsEngine::CreateVertexShader(const void* shader_byte_code, size_t byte_code_size)
+std::shared_ptr<VertexShader> GraphicsEngine::CreateVertexShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	auto* vs = new VertexShader();
+	auto vs = std::make_shared<VertexShader>();
 	if (!vs->Initialize(shader_byte_code, byte_code_size))
 	{
-		vs->Release();
 		return nullptr;
 	}
 	return vs;
 }
 
-PixelShader* GraphicsEngine::CreatePixelShader(const void* shader_byte_code, size_t byte_code_size)
+std::shared_ptr<PixelShader> GraphicsEngine::CreatePixelShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	auto* ps = new PixelShader();
+	auto ps = std::make_shared<PixelShader>();
 	if (!ps->Initialize(shader_byte_code, byte_code_size))
 	{
-		ps->Release();
 		return nullptr;
 	}
 	return ps;

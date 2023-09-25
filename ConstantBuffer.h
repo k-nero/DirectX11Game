@@ -15,7 +15,7 @@ public:
 	~ConstantBuffer();
 public:
 	ID3D11Buffer* GetBuffer();
-private:
+public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
 };
 

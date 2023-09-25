@@ -12,13 +12,18 @@ struct VS_OUTPUT
 
 cbuffer constant: register(b0)
 {
-    unsigned int time;
+    float time;
+    row_major float4x4 m_world;
+    row_major float4x4 m_view;
+    row_major float4x4 m_proj;
 }
 
 VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
-    output.Pos = input.Pos;
+    output.Pos = mul(input.Pos, m_world);
+    output.Pos = mul(output.Pos, m_view);
+    output.Pos = mul(output.Pos, m_proj);
     output.Color = input.Color;
     return output;
 }

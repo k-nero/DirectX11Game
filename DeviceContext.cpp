@@ -12,6 +12,11 @@ void DeviceContext::ClearRenderTargetView(ID3D11RenderTargetView* renderTargetVi
 	m_deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
 }
 
+void DeviceContext::SetIndexBuffer(IndexBuffer* indexBuffer) const
+{
+	m_deviceContext->IASetIndexBuffer(indexBuffer->GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
+}
+
 void DeviceContext::SetVertexBuffer(VertexBuffer* vertexBuffer) const
 {
 	unsigned int stride = vertexBuffer->GetVertexSize();
@@ -59,13 +64,13 @@ void DeviceContext::SetViewportSize(unsigned width, unsigned height) const
 void DeviceContext::SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const
 {
 	Microsoft::WRL::ComPtr<ID3D11Buffer> bufferPtr = buffer->GetBuffer();
-	m_deviceContext->VSSetConstantBuffers(0, 1, &bufferPtr);
+	m_deviceContext->VSSetConstantBuffers(0, 1, bufferPtr.GetAddressOf());
 }
 
 void DeviceContext::SetConstantBuffer(PixelShader* pixelShader, ConstantBuffer* buffer) const
 {
 	Microsoft::WRL::ComPtr<ID3D11Buffer> bufferPtr = buffer->GetBuffer();
-	m_deviceContext->VSSetConstantBuffers(0, 1, &bufferPtr);
+	m_deviceContext->PSSetConstantBuffers(0, 1, bufferPtr.GetAddressOf());
 }
 
 void DeviceContext::Release()

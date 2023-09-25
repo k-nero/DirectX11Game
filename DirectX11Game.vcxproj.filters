@@ -66,6 +66,9 @@
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>Engine\Graphic\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Engine\Graphic\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -93,6 +96,9 @@
       <Filter>Engine\Graphic\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
+      <Filter>Engine\Graphic\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
       <Filter>Engine\Graphic\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

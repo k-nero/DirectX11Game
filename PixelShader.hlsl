@@ -6,10 +6,13 @@ struct PS_INPUT
 
 cbuffer constant : register(b0)
 {
-    unsigned int time;
+    float time;
+    row_major float4x4 m_world;
+    row_major float4x4 m_view;
+    row_major float4x4 m_proj;
 }
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-	return float4(input.Color, 1.0f);
+	return float4(input.Color * time, 1.0f);
 }

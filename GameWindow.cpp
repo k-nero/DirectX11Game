@@ -4,7 +4,10 @@ using namespace DirectX;
 
 __declspec(align(16)) struct constant
 {
-	unsigned int time;
+	float time;
+	DirectX::XMMATRIX m_world;
+	DirectX::XMMATRIX m_view;
+	DirectX::XMMATRIX m_projection;
 };
 
 struct Vertex
@@ -37,6 +40,8 @@ void GameWindow::OnCreate()
 		{ XMFLOAT3{0.5f, 0.5f, 0.0f}, XMFLOAT3{1, 1, 1} }
 	};
 
+	m_ib = g_pGraphics_engine->CreateIndexBuffer();
+
 	m_vb = g_pGraphics_engine->CreateVertexBuffer();
 
 	void* shader_byte_code = nullptr;
@@ -58,10 +63,6 @@ void GameWindow::OnCreate()
 void GameWindow::OnDestroy()
 {
 	Window::OnDestroy();
-	m_vs->Release();
-	m_ps->Release();
-	m_vb->Release();
-	m_swap_chain->Release();
 	g_pGraphics_engine->Shutdown();
 }
 
@@ -74,15 +75,19 @@ void GameWindow::OnUpdate()
 	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
-	constant cbuffer = {0};
-	cbuffer.time = GetTickCount();
+	constant cbuffer{};
+	cbuffer.time = 0.6f;
+	cbuffer.m_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	cbuffer.m_view = XMMatrixIdentity();
+	cbuffer.m_projection = XMMatrixOrthographicLH((rc.right - rc.left)/400.0f, (rc.bottom - rc.top)/200.0f, 4, -4);
 	m_cb->Update(context, &cbuffer);
-	context->SetConstantBuffer(m_vs, m_cb);
-	context->SetConstantBuffer(m_ps, m_cb);
 
-	context->SetVertexShader(m_vs);
-	context->SetPixelShader(m_ps);
-	context->SetVertexBuffer(m_vb);
+	context->SetConstantBuffer(m_vs.get(), m_cb.get());
+	context->SetConstantBuffer(m_ps.get(), m_cb.get());
+
+	context->SetVertexShader(m_vs.get());
+	context->SetPixelShader(m_ps.get());
+	context->SetVertexBuffer(m_vb.get());
 	context->DrawTriangleStrip(m_vb->GetVertexListSize(), 0);
 
 	m_swap_chain->Present(true);
