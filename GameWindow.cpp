@@ -26,6 +26,7 @@ GameWindow::~GameWindow()
 void GameWindow::OnCreate()
 {
 	Window::OnCreate();
+	m_camera = std::make_shared<Camera>();
 	InputSystem::Get()->AddListener(this);
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
@@ -103,12 +104,18 @@ void GameWindow::OnUpdate()
 	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
+	XMFLOAT3 temp;
+	XMStoreFloat3(&temp, camera_pos);
+	m_camera->SetPosition(temp.x, temp.y, temp.z);
+	m_camera->SetRotation(m_rot_x, m_rot_y, 0.0f);
+	m_camera->Render();
+
 	constant cbuffer{};
 	cbuffer.time = 0.6f;
-	cbuffer.m_world = XMMatrixIdentity() * XMMatrixRotationX(m_rot_x) * XMMatrixRotationY(m_rot_y);
-	cbuffer.m_view = XMMatrixLookAtLH(camera_pos, DirectX::XMVectorSet(0, 0, 0, 0), DirectX::XMVectorSet(0, 1, 0, 0)) ;
-	cbuffer.m_projection = XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
-	
+	cbuffer.m_world = DirectX::XMMatrixIdentity();
+	cbuffer.m_view = m_camera->GetViewMatrix();
+	cbuffer.m_projection = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
+
 	m_cb->Update(context, &cbuffer);
 
 	context->SetConstantBuffer(m_vs.get(), m_cb.get());
@@ -140,23 +147,35 @@ void GameWindow::OnUnFocus()
 
 void GameWindow::OnKeyDown(int key)
 {
+	auto right = XMVector3Cross({ 0, 1, 0 }, m_camera->GetLookAtVector());
+	auto front = m_camera->GetLookAtVector();
 	if (key == 'W')
 	{
-		m_rot_x += 0.2f * m_delta_time;
+		camera_pos = XMVectorAdd(camera_pos, m_camera->GetLookAtVector() * 0.2f * m_delta_time);
 	}
-	else if(key == 'S')
+	if(key == 'S')
 	{
-		m_rot_x -= 0.2f * m_delta_time;
+		camera_pos = XMVectorSubtract(camera_pos, m_camera->GetLookAtVector() * 0.2f * m_delta_time);
 	}
-	else if(key == 'A')
+	 if(key == 'A')
 	{
-		m_rot_y += 0.2f * m_delta_time;
+		camera_pos = XMVectorSubtract(camera_pos, right);
 	}
-	else if (key == 'D')
+	 if (key == 'D')
 	{
-		m_rot_y -= 0.2f * m_delta_time;
+		camera_pos = XMVectorAdd(camera_pos, right);
 	}
-	else if (key == VK_SPACE)
+	 if (key == VK_SPACE)
+	{
+		auto up = XMVector3Cross(right, front);
+		camera_pos = XMVectorAdd(camera_pos, up);
+	}
+	 if (key == VK_LSHIFT)
+	{
+		auto up = XMVector3Cross(right, front);
+		camera_pos = XMVectorSubtract(camera_pos, up);
+	}
+	 if (key == VK_ESCAPE)
 	{
 		m_play_state = !m_play_state;
 		InputSystem::Get()->ShowCursor(!m_play_state);
@@ -174,8 +193,8 @@ void GameWindow::OnMouseMove(const DirectX::XMFLOAT2& mouse_position)
 	POINT center = { (rc.right - rc.left) / 2, (rc.bottom - rc.top) / 2 };
 	if (m_play_state)
 	{
-		m_rot_x -= (mouse_position.y - center.y) * m_delta_time * 0.01f;
-		m_rot_y -= (mouse_position.x - center.x) * m_delta_time * 0.01f;
+		m_rot_x += (mouse_position.y - center.y) * m_delta_time;
+		m_rot_y += (mouse_position.x - center.x) * m_delta_time;
 		InputSystem::Get()->SetCursorPosition(center);
 	}
 	

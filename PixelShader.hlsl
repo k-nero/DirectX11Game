@@ -7,9 +7,9 @@ struct PS_INPUT
 cbuffer constant : register(b0)
 {
     float time;
-    row_major float4x4 m_world;
-    row_major float4x4 m_view;
-    row_major float4x4 m_proj;
+    row_major matrix m_world;
+    row_major matrix m_view;
+    row_major matrix m_proj;
 }
 
 float4 main(PS_INPUT input) : SV_TARGET

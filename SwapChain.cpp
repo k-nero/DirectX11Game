@@ -15,6 +15,8 @@ bool SwapChain::Initialize(HWND hwnd, unsigned int width, unsigned int height, b
 	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.BufferDesc.RefreshRate.Numerator = 144;
 	desc.BufferDesc.RefreshRate.Denominator = 1;
+	desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	desc.BufferUsage = 0x00000020UL;
 	desc.OutputWindow = hwnd;
 	desc.SampleDesc.Count = 4;

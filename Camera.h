@@ -16,8 +16,10 @@ public:
 
 	void Render();
 	DirectX::XMMATRIX GetViewMatrix();
+	DirectX::XMVECTOR GetLookAtVector();
 
 private:
+	DirectX::XMVECTOR lookAtVector{0, 0 , 1};
 	float m_positionX;
 	float m_positionY;
 	float m_positionZ;

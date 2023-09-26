@@ -49,8 +49,8 @@ DirectX::XMFLOAT3 Camera::GetRotation()
 
 void Camera::Render()
 {
-	XMFLOAT3 up{}, position{}, lookAt{};
-	XMVECTOR upVector, positionVector, lookAtVector;
+	XMFLOAT3 up{}, position{};
+	XMVECTOR upVector, positionVector;
 	float yaw, pitch, roll;
 	XMMATRIX rotationMatrix;
 
@@ -72,13 +72,8 @@ void Camera::Render()
 	positionVector = XMLoadFloat3(&position);
 
 	// Setup where the camera is looking by default.
-	lookAt.x = 0.0f;
-	lookAt.y = 0.0f;
-	lookAt.z = 1.0f;
 
-	// Load it into a XMVECTOR structure.
-	lookAtVector = XMLoadFloat3(&lookAt);
-
+	// Load it into a XMVECTOR structur
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 	pitch = m_rotationX * 0.0174532925f;
 	yaw = m_rotationY * 0.0174532925f;
@@ -103,4 +98,9 @@ void Camera::Render()
 DirectX::XMMATRIX Camera::GetViewMatrix()
 {
 	return m_viewMatrix;
+}
+
+DirectX::XMVECTOR Camera::GetLookAtVector()
+{
+	return this->lookAtVector;
 }
