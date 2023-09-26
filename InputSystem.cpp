@@ -17,12 +17,11 @@ void InputSystem::Update()
 
 	if (current_mouse_pos.x != old_mouse_pos.x || current_mouse_pos.y != old_mouse_pos.y)
 	{
-		DirectX::XMFLOAT2 delta_mouse_pos = { current_mouse_pos.x - old_mouse_pos.x, current_mouse_pos.y - old_mouse_pos.y };
+		DirectX::XMFLOAT2 mouse_pos = {static_cast<float> (current_mouse_pos.x) ,static_cast<float>(current_mouse_pos.y)};
 		for (auto& it : m_listeners)
 		{
-			it.second->OnMouseMove(delta_mouse_pos);
+			it.second->OnMouseMove(mouse_pos);
 		}
-		old_mouse_pos = { static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) };
 	}
 
 	if (GetKeyboardState(m_key_states))
@@ -83,6 +82,16 @@ void InputSystem::Update()
 void InputSystem::AddListener(IInputListener* listener)
 {
 	m_listeners.insert(std::pair<IInputListener*, IInputListener*>(std::forward<IInputListener*>(listener), std::forward<IInputListener*>(listener)));
+}
+
+void InputSystem::SetCursorPosition(const POINT& position)
+{
+	::SetCursorPos(position.x, position.y);
+}
+
+void InputSystem::ShowCursor(bool show)
+{
+	::ShowCursor(show);
 }
 
 void InputSystem::RemoveListener(IInputListener* listener)

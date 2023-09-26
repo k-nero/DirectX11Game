@@ -9,6 +9,8 @@ public:
 	InputSystem();
 	void Update();
 	void AddListener(IInputListener* listener);
+	void SetCursorPosition(const POINT& position);
+	void ShowCursor(bool show);
 	void RemoveListener(IInputListener* listener);
 	~InputSystem();
 public:

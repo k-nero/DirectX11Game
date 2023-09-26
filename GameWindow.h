@@ -28,7 +28,7 @@ public:
 	// Inherited via IInputListener
 	void OnKeyDown(int key) override;
 	void OnKeyUp(int key) override;
-	void OnMouseMove(const DirectX::XMFLOAT2& delta_mouse_position) override;
+	void OnMouseMove(const DirectX::XMFLOAT2& mouse_position) override;
 	void OnRightMouseDown(const DirectX::XMFLOAT2& mouse_position) override;
 	void OnRightMouseUp(const DirectX::XMFLOAT2& mouse_position) override;
 	void OnLeftMouseDown(const DirectX::XMFLOAT2& mouse_position) override;
@@ -53,5 +53,7 @@ private:
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
 
 	std::shared_ptr<Camera> m_camera = nullptr;
+
+	bool m_play_state = true;
 };
 

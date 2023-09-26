@@ -1,187 +1,106 @@
 #include "Camera.h"
 
-const XMFLOAT3 Camera::Up()
+using namespace DirectX;
+
+Camera::Camera()
 {
-	auto temp = GMathFV(mUp) - GMathFV(mPosition);
-	auto temp2 = GMathVF(temp);
-	return temp2;
+	m_positionX = 0.0f;
+	m_positionY = 0.0f;
+	m_positionZ = 0.0f;
+
+	m_rotationX = 0.0f;
+	m_rotationY = 0.0f;
+	m_rotationZ = 0.0f;
 }
 
-const XMFLOAT3 Camera::LookAtTarget()
+Camera::Camera(const Camera&)
 {
-	auto temp = GMathFV(mTarget) - GMathFV(mPosition);
-	return GMathVF(temp);
 }
 
-const XMFLOAT4X4 Camera::View()
+Camera::~Camera()
 {
-	auto temp = XMMatrixTranspose(GMathFM(mView));
-	return GMathMF(temp);
 }
 
-const XMFLOAT4X4 Camera::Proj()
+void Camera::SetPosition(float x, float y, float z)
 {
-	auto temp = XMMatrixTranspose(GMathFM(mProj));
-	return GMathMF(temp);
+	m_positionX = x;
+	m_positionY = y;
+	m_positionZ = z;
+	return;
 }
 
-const XMFLOAT4X4 Camera::Ortho()
+void Camera::SetRotation(float x, float y, float z)
 {
-	auto temp = XMMatrixTranspose(GMathFM(mOrtho));
-	return GMathMF(temp);
+	m_rotationX = x;
+	m_rotationY = y;
+	m_rotationZ = z;
+	return;
 }
 
-
-Camera::Camera(void)
+DirectX::XMFLOAT3 Camera::GetPosition()
 {
-	mPosition = XMFLOAT3(0.0f, 0.0f, 20.0f);
-	mTarget = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	auto temp1 = XMFLOAT3(0, 1, 0);
-	auto temp2 = GMathFV(mPosition);
-	auto temp3 = temp2 + GMathFV(temp1);
-	mUp = GMathVF(temp3);
-	this->initViewMatrix();
-
-	mAngle = 0.0f;
-	mClientWidth = 0.0f;
-	mClientHeight = 0.0f;
-	mNearest = 0.0f;
-	mFarthest = 0.0f;
-
-	XMStoreFloat4x4(&mView, XMMatrixIdentity());
-	XMStoreFloat4x4(&mProj, XMMatrixIdentity());
-	XMStoreFloat4x4(&mOrtho, XMMatrixIdentity());
+	return DirectX::XMFLOAT3({m_positionX, m_positionY, m_positionZ});
 }
 
-Camera::Camera(const Camera& camera)
+DirectX::XMFLOAT3 Camera::GetRotation()
 {
-	*this = camera;
+	return DirectX::XMFLOAT3({m_rotationX, m_rotationY, m_rotationZ});
 }
 
-Camera& Camera::operator=(const Camera& camera)
+void Camera::Render()
 {
-	mPosition = camera.mPosition;
-	mTarget = camera.mTarget;
-	mUp = camera.mUp;
+	XMFLOAT3 up{}, position{}, lookAt{};
+	XMVECTOR upVector, positionVector, lookAtVector;
+	float yaw, pitch, roll;
+	XMMATRIX rotationMatrix;
 
-	mAngle = camera.mAngle;
-	mClientWidth = camera.mClientWidth;
-	mClientHeight = camera.mClientHeight;
-	mNearest = camera.mNearest;
-	mFarthest = camera.mFarthest;
 
-	mView = camera.mView;
-	mProj = camera.mProj;
-	mOrtho = camera.mOrtho;
-	return *this;
+	// Setup the vector that points upwards.
+	up.x = 0.0f;
+	up.y = 1.0f;
+	up.z = 0.0f;
+
+	// Load it into a XMVECTOR structure.
+	upVector = XMLoadFloat3(&up);
+
+	// Setup the position of the camera in the world.
+	position.x = m_positionX;
+	position.y = m_positionY;
+	position.z = m_positionZ;
+
+	// Load it into a XMVECTOR structure.
+	positionVector = XMLoadFloat3(&position);
+
+	// Setup where the camera is looking by default.
+	lookAt.x = 0.0f;
+	lookAt.y = 0.0f;
+	lookAt.z = 1.0f;
+
+	// Load it into a XMVECTOR structure.
+	lookAtVector = XMLoadFloat3(&lookAt);
+
+	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
+	pitch = m_rotationX * 0.0174532925f;
+	yaw = m_rotationY * 0.0174532925f;
+	roll = m_rotationZ * 0.0174532925f;
+
+	// Create the rotation matrix from the yaw, pitch, and roll values.
+	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+
+	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
+	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
+	upVector = XMVector3TransformCoord(upVector, rotationMatrix);
+
+	// Translate the rotated camera position to the location of the viewer.
+	lookAtVector = XMVectorAdd(positionVector, lookAtVector);
+
+	// Finally create the view matrix from the three updated vectors.
+	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
+
+	return;
 }
 
-void Camera::initViewMatrix()
+DirectX::XMMATRIX Camera::GetViewMatrix()
 {
-	auto temp = this->Up();
-	XMStoreFloat4x4(&mView, XMMatrixLookAtLH(XMLoadFloat3(&mPosition), XMLoadFloat3(&mTarget), XMLoadFloat3(&temp)));
-}
-
-void Camera::InitProjMatrix(const float angle, const float client_width, const float client_height, const float near_plane, const float far_plane)
-{
-	mAngle = angle;
-	mClientWidth = client_width;
-	mClientHeight = client_height;
-	mNearest = near_plane;
-	mFarthest = far_plane;
-	XMStoreFloat4x4(&mProj, XMMatrixPerspectiveFovLH(angle, client_width / client_height, near_plane, far_plane));
-}
-
-void Camera::Move(XMFLOAT3 direction)
-{
-	auto temp = XMVector3Transform(GMathFV(mPosition), XMMatrixTranslation(direction.x, direction.y, direction.z));
-	mPosition = GMathVF(temp);
-	auto temp2 = XMVector3Transform(GMathFV(mTarget), XMMatrixTranslation(direction.x, direction.y, direction.z));
-	mTarget = GMathVF(temp2);
-	auto temp3 = XMVector3Transform(GMathFV(mUp), XMMatrixTranslation(direction.x, direction.y, direction.z));
-	mUp = GMathVF(temp3);
-
-	this->initViewMatrix();
-}
-
-void Camera::Rotate(XMFLOAT3 axis, float degrees)
-{
-	if (XMVector3Equal(GMathFV(axis), XMVectorZero()) || degrees == 0.0f)
-	{
-		return;
-	}
-
-	// rotate vectors
-	auto temp1 = GMathFV(mTarget) - GMathFV(mPosition);
-	XMFLOAT3 look_at_target = GMathVF(temp1);
-	auto temp2 = GMathFV(mUp) - GMathFV(mPosition);
-	XMFLOAT3 look_at_up = GMathVF(temp2);
-	auto temp3 = XMVector3Transform(GMathFV(look_at_target), XMMatrixRotationAxis(GMathFV(axis), XMConvertToRadians(degrees)));
-	look_at_target = GMathVF(temp3);
-	auto temp4 = XMVector3Transform(GMathFV(look_at_up), XMMatrixRotationAxis(GMathFV(axis), XMConvertToRadians(degrees)));
-	look_at_up = GMathVF(temp4);
-
-	// restore vectors's end points mTarget and mUp from new rotated vectors
-	auto temp5 = GMathFV(mPosition) + GMathFV(look_at_target);
-	mTarget = GMathVF(temp5);
-	auto temp6 = GMathFV(mPosition) + GMathFV(look_at_up);
-	mUp = GMathVF(temp6);
-
-	this->initViewMatrix();
-}
-
-void Camera::Target(XMFLOAT3 new_target)
-{
-	if (XMVector3Equal(GMathFV(new_target), GMathFV(mPosition)) || XMVector3Equal(GMathFV(new_target), GMathFV(mTarget)))
-	{
-		return;
-	}
-
-	auto temp1 = GMathFV(mTarget) - GMathFV(mPosition);
-	XMFLOAT3 old_look_at_target = GMathVF(temp1);
-	auto temp2 = GMathFV(new_target) - GMathFV(mPosition);
-	XMFLOAT3 new_look_at_target = GMathVF(temp2);
-	float angle = XMConvertToDegrees(XMVectorGetX( XMVector3AngleBetweenNormals(XMVector3Normalize(GMathFV(old_look_at_target)), XMVector3Normalize(GMathFV(new_look_at_target)))));
-	if (angle != 0.0f && angle != 360.0f && angle != 180.0f)
-	{
-		XMVECTOR axis = XMVector3Cross(GMathFV(old_look_at_target), GMathFV(new_look_at_target));
-		Rotate(GMathVF(axis), angle);
-	}
-	mTarget = new_target;
-	this->initViewMatrix();
-}
-
-// Set camera position
-void Camera::Position(XMFLOAT3& new_position)
-{
-	auto temp = GMathFV(new_position) - GMathFV(mPosition);
-	XMFLOAT3 move_vector = GMathVF(temp);
-	XMFLOAT3 target = mTarget;
-	this->Move(move_vector);
-	this->Target(target);
-}
-
-void Camera::NearestPlane(float nearest)
-{
-	mNearest = nearest;
-	OnResize(mClientWidth, mClientHeight);
-}
-
-void Camera::FarthestPlane(float farthest)
-{
-	mFarthest = farthest;
-	OnResize(mClientWidth, mClientHeight);
-}
-
-void Camera::InitOrthoMatrix(const float clientWidth, const float clientHeight,const float nearZ, const float fartherZ)
-{
-	XMStoreFloat4x4(&mOrtho, XMMatrixOrthographicLH(clientWidth, clientHeight, 0.0f, fartherZ));
-}
-
-void Camera::OnResize(float new_width, float new_height)
-{
-	mClientWidth = new_width;
-	mClientHeight = new_height;
-	InitProjMatrix(mAngle, static_cast<float>(new_width), static_cast<float>(new_height), mNearest, mFarthest);
-	InitOrthoMatrix(static_cast<float>(new_width), static_cast<float>(new_height), 0.0f, mFarthest);
+	return m_viewMatrix;
 }
