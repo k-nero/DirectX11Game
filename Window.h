@@ -13,6 +13,8 @@ public:
 	virtual void OnCreate();
 	virtual void OnDestroy();
 	virtual void OnUpdate();
+	virtual void OnFocus();
+	virtual void OnUnFocus();
 	~Window();
 protected:
 	HWND m_hWnd{};

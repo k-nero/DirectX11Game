@@ -106,7 +106,7 @@ void GameWindow::OnUpdate()
 
 	constant cbuffer{};
 	cbuffer.time = 0.6f;
-	cbuffer.m_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f) * XMMatrixScaling(1, 1, 1) * XMMatrixRotationY(m_rot_y) * XMMatrixRotationX(m_rot_x);
+	cbuffer.m_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f) * XMMatrixScaling(m_scale_cube, m_scale_cube, m_scale_cube) * XMMatrixRotationY(m_rot_y) * XMMatrixRotationX(m_rot_x);
 	cbuffer.m_view = XMMatrixIdentity();
 	cbuffer.m_projection = XMMatrixOrthographicLH((rc.right - rc.left) / 300.0f, (rc.bottom - rc.top) / 300.0f, 4, -4);
 	m_cb->Update(context, &cbuffer);
@@ -130,6 +130,16 @@ void GameWindow::OnUpdate()
 	context = nullptr;
 }
 
+void GameWindow::OnFocus()
+{
+	InputSystem::Get()->AddListener(this);
+}
+
+void GameWindow::OnUnFocus()
+{
+	InputSystem::Get()->RemoveListener(this);
+}
+
 void GameWindow::OnKeyDown(int key)
 {
 	if (key == 'W')
@@ -151,6 +161,32 @@ void GameWindow::OnKeyDown(int key)
 }
 
 void GameWindow::OnKeyUp(int key)
+{
+
+}
+
+void GameWindow::OnMouseMove(const DirectX::XMFLOAT2& delta_mouse_position)
+{
+	m_rot_x -= delta_mouse_position.y * m_delta_time * 0.01f;
+	m_rot_y -= delta_mouse_position.x * m_delta_time * 0.01f;
+}
+
+void GameWindow::OnRightMouseDown(const DirectX::XMFLOAT2& mouse_position)
+{
+	this->m_scale_cube += 0.2f * m_delta_time;
+}
+
+void GameWindow::OnRightMouseUp(const DirectX::XMFLOAT2& mouse_position)
+{
+
+}
+
+void GameWindow::OnLeftMouseDown(const DirectX::XMFLOAT2& mouse_position)
+{
+	this->m_scale_cube -= 0.2f * m_delta_time;
+}
+
+void GameWindow::OnLeftMouseUp(const DirectX::XMFLOAT2& mouse_position)
 {
 
 }

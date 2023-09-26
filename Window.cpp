@@ -8,17 +8,29 @@ __int64 _stdcall WndProc(HWND hWnd, unsigned int  message, unsigned __int64 wPar
 	{
 		case 0x0001U:
 		{
-			Window* window = (Window*) ((LPCREATESTRUCTW) lParam)->lpCreateParams;
-			SetWindowLongPtrW(hWnd, (-21), (__int64) window);
+			Window* window = (Window*)((LPCREATESTRUCTW)lParam)->lpCreateParams;
+			SetWindowLongPtrW(hWnd, (-21), (__int64)window);
 			window->SetHWND(hWnd);
 			window->OnCreate();
 			break;
 		}
 		case 0x0002U:
 		{
-			Window* window = (Window*) GetWindowLongPtrW(hWnd, -21);
+			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
 			window->OnDestroy();
 			PostQuitMessage(0);
+			break;
+		}
+		case WM_SETFOCUS:
+		{
+			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
+			window->OnFocus();
+			break;
+		}
+		case WM_KILLFOCUS:
+		{
+			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
+			window->OnUnFocus();
 			break;
 		}
 	}
@@ -31,10 +43,10 @@ bool Window::Initialize()
 	wc.cbClsExtra = 0;
 	wc.cbSize = sizeof(WNDCLASSEXW);
 	wc.cbWndExtra = 0;
-	wc.hbrBackground = (HBRUSH) 0x0005U;
-	wc.hCursor = LoadCursor(0, ((LPWSTR) (0x7F00)));
-	wc.hIcon = LoadIcon(0, ((LPWSTR) (0x7F00)));
-	wc.hIconSm = LoadIcon(0, ((LPWSTR) (0x7F00)));
+	wc.hbrBackground = (HBRUSH)0x0005U;
+	wc.hCursor = LoadCursor(0, ((LPWSTR)(0x7F00)));
+	wc.hIcon = LoadIcon(0, ((LPWSTR)(0x7F00)));
+	wc.hIconSm = LoadIcon(0, ((LPWSTR)(0x7F00)));
 	wc.hInstance = 0;
 	wc.lpszClassName = L"CXWindow";
 	wc.lpszMenuName = 0;
@@ -46,7 +58,7 @@ bool Window::Initialize()
 		return false;
 	}
 
-	m_hWnd = CreateWindowExW(( 0x00000300L ), L"CXWindow", L"DirectX 11 Game", (0x00CBF2EDL), ((int) 0x80000000), ((int) 0x80000000), 1280, 720, 0, 0, 0, this);
+	m_hWnd = CreateWindowExW((0x00000300L), L"CXWindow", L"DirectX 11 Game", (0x00CBF2EDL), ((int)0x80000000), ((int)0x80000000), 1280, 720, 0, 0, 0, this);
 
 	if (m_hWnd == 0)
 	{
@@ -110,6 +122,14 @@ void Window::OnDestroy()
 void Window::OnUpdate()
 {
 
+}
+
+void Window::OnFocus()
+{
+}
+
+void Window::OnUnFocus()
+{
 }
 
 Window::~Window() = default;

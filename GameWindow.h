@@ -22,10 +22,16 @@ public:
 	void OnCreate() override;
 	void OnDestroy() override;
 	void OnUpdate() override;
-
+	void OnFocus() override;
+	void OnUnFocus() override;
 	// Inherited via IInputListener
 	void OnKeyDown(int key) override;
 	void OnKeyUp(int key) override;
+	void OnMouseMove(const DirectX::XMFLOAT2& delta_mouse_position) override;
+	void OnRightMouseDown(const DirectX::XMFLOAT2& mouse_position) override;
+	void OnRightMouseUp(const DirectX::XMFLOAT2& mouse_position) override;
+	void OnLeftMouseDown(const DirectX::XMFLOAT2& mouse_position) override;
+	void OnLeftMouseUp(const DirectX::XMFLOAT2& mouse_position) override;
 private:
 	GraphicsEngine* g_pGraphics_engine = nullptr;
 private:
@@ -43,5 +49,7 @@ private:
 	DWORD m_old_time = 0;
 	DWORD m_new_time = 0;
 	float m_delta_time = 0.0f;
+
+	float m_scale_cube = 1.0f;
 };
 

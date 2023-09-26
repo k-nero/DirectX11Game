@@ -2,6 +2,7 @@
 #include "IInputListener.h"
 #include <map>
 #include <Windows.h>
+#include <DirectXMath.h>
 class InputSystem
 {
 public:
@@ -16,5 +17,8 @@ private:
 	std::map<IInputListener*, IInputListener*> m_listeners;
 	unsigned char m_key_states[256] = {};
 	unsigned char m_old_key_states[256] = {};
+private:
+	DirectX::XMFLOAT2 old_mouse_pos = {};
+	bool init_move = true;
 };
 
