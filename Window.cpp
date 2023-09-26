@@ -6,7 +6,7 @@ __int64 _stdcall WndProc(HWND hWnd, unsigned int  message, unsigned __int64 wPar
 {
 	switch (message)
 	{
-		case 0x0001U:
+		case WM_CREATE:
 		{
 			Window* window = (Window*)((LPCREATESTRUCTW)lParam)->lpCreateParams;
 			SetWindowLongPtrW(hWnd, (-21), (__int64)window);
@@ -14,7 +14,7 @@ __int64 _stdcall WndProc(HWND hWnd, unsigned int  message, unsigned __int64 wPar
 			window->OnCreate();
 			break;
 		}
-		case 0x0002U:
+		case WM_DESTROY:
 		{
 			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
 			window->OnDestroy();

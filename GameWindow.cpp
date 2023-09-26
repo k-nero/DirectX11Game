@@ -26,7 +26,6 @@ GameWindow::~GameWindow()
 void GameWindow::OnCreate()
 {
 	Window::OnCreate();
-
 	InputSystem::Get()->AddListener(this);
 
 	g_pGraphics_engine = GraphicsEngine::Get();
@@ -106,9 +105,10 @@ void GameWindow::OnUpdate()
 
 	constant cbuffer{};
 	cbuffer.time = 0.6f;
-	cbuffer.m_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f) * XMMatrixScaling(m_scale_cube, m_scale_cube, m_scale_cube) * XMMatrixRotationY(m_rot_y) * XMMatrixRotationX(m_rot_x);
-	cbuffer.m_view = XMMatrixIdentity();
-	cbuffer.m_projection = XMMatrixOrthographicLH((rc.right - rc.left) / 300.0f, (rc.bottom - rc.top) / 300.0f, 4, -4);
+	cbuffer.m_world = XMMatrixIdentity();
+	cbuffer.m_view = XMMatrixLookAtLH(camera_pos, DirectX::XMVectorSet(0, 0, 0, 0), DirectX::XMVectorSet(0, 1, 0, 0)) * XMMatrixRotationX(m_rot_x) * XMMatrixRotationY(m_rot_y);
+	cbuffer.m_projection = XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
+	
 	m_cb->Update(context, &cbuffer);
 
 	context->SetConstantBuffer(m_vs.get(), m_cb.get());
@@ -126,8 +126,6 @@ void GameWindow::OnUpdate()
 	m_new_time = GetTickCount();
 
 	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
-
-	context = nullptr;
 }
 
 void GameWindow::OnFocus()
@@ -173,7 +171,7 @@ void GameWindow::OnMouseMove(const DirectX::XMFLOAT2& delta_mouse_position)
 
 void GameWindow::OnRightMouseDown(const DirectX::XMFLOAT2& mouse_position)
 {
-	this->m_scale_cube += 0.2f * m_delta_time;
+
 }
 
 void GameWindow::OnRightMouseUp(const DirectX::XMFLOAT2& mouse_position)
@@ -183,7 +181,7 @@ void GameWindow::OnRightMouseUp(const DirectX::XMFLOAT2& mouse_position)
 
 void GameWindow::OnLeftMouseDown(const DirectX::XMFLOAT2& mouse_position)
 {
-	this->m_scale_cube -= 0.2f * m_delta_time;
+
 }
 
 void GameWindow::OnLeftMouseUp(const DirectX::XMFLOAT2& mouse_position)

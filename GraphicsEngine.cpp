@@ -111,10 +111,10 @@ bool GraphicsEngine::CompilePixelShader(const wchar_t* file_name, const char* en
 	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
 	unsigned int flag =  D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined (_DEBUG)
-	UINT flag2 = D3DCOMPILE_DEBUG;
+	flag |= D3DCOMPILE_DEBUG;
 #endif
 
-	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "ps_5_0", flag, flag2, &m_blob, &error_blob);
+	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "ps_5_0", flag, NULL, &m_blob, &error_blob);
 	if (FAILED(hr) || error_blob)
 	{
 		if (error_blob)
@@ -135,9 +135,9 @@ bool GraphicsEngine::CompileVertexShader(const wchar_t* file_name, const char* e
 	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
 	unsigned int flag =  D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined (_DEBUG)
-	UINT flag2 = D3DCOMPILE_DEBUG;
+	flag |= D3DCOMPILE_DEBUG;
 #endif
-	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "vs_5_0", flag, flag2, &m_blob, &error_blob);
+	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "vs_5_0", flag, NULL, &m_blob, &error_blob);
 	if (FAILED(hr) || error_blob)
 	{
 		if (error_blob)
