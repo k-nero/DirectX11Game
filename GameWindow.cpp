@@ -26,7 +26,7 @@ GameWindow::~GameWindow()
 void GameWindow::OnCreate()
 {
 	Window::OnCreate();
-	m_camera = std::make_shared<Camera>();
+	m_camera = std::make_shared<Camera>(Camera({ 0, 0, 2 }, { 0, 1, 0 }, -90.0f, 0.0f, 1.0f, 0.2f));
 	InputSystem::Get()->AddListener(this);
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
@@ -100,15 +100,11 @@ void GameWindow::OnUpdate()
 	Window::OnUpdate();
 	RECT rc = this->GetClient();
 	InputSystem::Get()->Update();
+	m_camera->UpdateViewMatrix();
 	auto context = g_pGraphics_engine->GetImmediateDeviceContext();
 	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
-	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, camera_pos);
-	m_camera->SetPosition(temp.x, temp.y, temp.z);
-	m_camera->SetRotation(m_rot_x, m_rot_y, 0.0f);
-	m_camera->Render();
 
 	constant cbuffer{};
 	cbuffer.time = 0.6f;
@@ -147,38 +143,11 @@ void GameWindow::OnUnFocus()
 
 void GameWindow::OnKeyDown(int key)
 {
-	auto right = XMVector3Cross({ 0, 1, 0 }, m_camera->GetLookAtVector());
-	auto front = m_camera->GetLookAtVector();
-	if (key == 'W')
+	m_camera->KeyControl(key, m_delta_time);
+	if (key == VK_ESCAPE)
 	{
-		camera_pos = XMVectorAdd(camera_pos, m_camera->GetLookAtVector() * 0.2f * m_delta_time);
-	}
-	if(key == 'S')
-	{
-		camera_pos = XMVectorSubtract(camera_pos, m_camera->GetLookAtVector() * 0.2f * m_delta_time);
-	}
-	 if(key == 'A')
-	{
-		camera_pos = XMVectorSubtract(camera_pos, right);
-	}
-	 if (key == 'D')
-	{
-		camera_pos = XMVectorAdd(camera_pos, right);
-	}
-	 if (key == VK_SPACE)
-	{
-		auto up = XMVector3Cross(right, front);
-		camera_pos = XMVectorAdd(camera_pos, up);
-	}
-	 if (key == VK_LSHIFT)
-	{
-		auto up = XMVector3Cross(right, front);
-		camera_pos = XMVectorSubtract(camera_pos, up);
-	}
-	 if (key == VK_ESCAPE)
-	{
-		m_play_state = !m_play_state;
-		InputSystem::Get()->ShowCursor(!m_play_state);
+		this->m_play_state = !this->m_play_state;
+		InputSystem::Get()->ShowCursor(!this->m_play_state);
 	}
 }
 
@@ -193,11 +162,10 @@ void GameWindow::OnMouseMove(const DirectX::XMFLOAT2& mouse_position)
 	POINT center = { (rc.right - rc.left) / 2, (rc.bottom - rc.top) / 2 };
 	if (m_play_state)
 	{
-		m_rot_x += (mouse_position.y - center.y) * m_delta_time;
-		m_rot_y += (mouse_position.x - center.x) * m_delta_time;
+		m_camera->MouseControl(mouse_position.x - center.x, mouse_position.y - center.y);
 		InputSystem::Get()->SetCursorPosition(center);
 	}
-	
+
 }
 
 void GameWindow::OnRightMouseDown(const DirectX::XMFLOAT2& mouse_position)

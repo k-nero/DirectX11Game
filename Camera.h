@@ -1,30 +1,31 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <Windows.h>
 
 class Camera
 {
 public:
 	Camera();
 	Camera(const Camera& camera);
+	Camera(DirectX::XMVECTOR init_camera_pos, DirectX::XMVECTOR init_world_up, float ini_yaw, float init_pitch, float movement_speed, float mouse_sensitive);
 	~Camera();
-	void SetPosition(float x, float y, float z);
-	void SetRotation(float x, float y, float z);
-
-	DirectX::XMFLOAT3 GetPosition();
-	DirectX::XMFLOAT3 GetRotation();
-
-	void Render();
+	
+	void KeyControl(int keys, float delta_time);
+	void MouseControl(int x, int y);
+	void UpdateViewMatrix();
 	DirectX::XMMATRIX GetViewMatrix();
-	DirectX::XMVECTOR GetLookAtVector();
 
 private:
-	DirectX::XMVECTOR lookAtVector{0, 0 , 1};
-	float m_positionX;
-	float m_positionY;
-	float m_positionZ;
-	float m_rotationX; 
-	float m_rotationY;
-	float m_rotationZ;
-	DirectX::XMMATRIX m_viewMatrix{};
+	DirectX::XMVECTOR m_camera_pos{};
+	DirectX::XMVECTOR m_camera_front{};
+	DirectX::XMVECTOR m_camera_up{};
+	DirectX::XMVECTOR m_camera_right{};
+	DirectX::XMVECTOR m_world_up{0, 1, 0};
+
+	float m_yaw;
+	float m_pitch;
+
+	float m_movement_speed;
+	float m_mouse_sensitive;
 };

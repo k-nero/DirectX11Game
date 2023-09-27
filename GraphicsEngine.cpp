@@ -52,7 +52,7 @@ bool GraphicsEngine::Initialize()
 
 void GraphicsEngine::Shutdown()
 {
-	GraphicsEngine::~GraphicsEngine();
+	//GraphicsEngine::~GraphicsEngine();
 	//delete this;
 }
 

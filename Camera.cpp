@@ -1,106 +1,93 @@
 #include "Camera.h"
 
-using namespace DirectX;
+Camera::Camera() = default;
 
-Camera::Camera()
+Camera::Camera(const Camera& camera)
 {
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
+	this->m_camera_pos = camera.m_camera_pos;
+	this->m_world_up = camera.m_world_up;
+	this->m_yaw = camera.m_yaw;
+	this->m_pitch = camera.m_pitch;
+	this->m_movement_speed = camera.m_movement_speed;
+	this->m_mouse_sensitive = camera.m_mouse_sensitive;
 }
 
-Camera::Camera(const Camera&)
+Camera::Camera(DirectX::XMVECTOR init_camera_pos, DirectX::XMVECTOR init_world_up, float init_yaw, float init_pitch, float movement_speed, float mouse_sensitive)
 {
+	this->m_camera_pos = init_camera_pos;
+	this->m_world_up = init_world_up;
+	this->m_yaw = init_yaw;
+	this->m_pitch = init_pitch;
+	this->m_movement_speed = movement_speed;
+	this->m_mouse_sensitive = mouse_sensitive;
 }
 
 Camera::~Camera()
 {
 }
 
-void Camera::SetPosition(float x, float y, float z)
+void Camera::KeyControl(int key, float delta_time)
 {
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
-	return;
+	if (key == 'W')
+	{
+		m_camera_pos = DirectX::XMVectorAdd(m_camera_pos, DirectX::XMVectorScale(m_camera_front, delta_time * this->m_movement_speed));
+	}
+	if (key == 'S')
+	{
+		m_camera_pos = DirectX::XMVectorSubtract(m_camera_pos, DirectX::XMVectorScale(m_camera_front, delta_time * this->m_movement_speed));
+	}
+	if (key == 'A')
+	{
+		m_camera_pos = DirectX::XMVectorAdd(m_camera_pos, DirectX::XMVectorScale(m_camera_right, delta_time * this->m_movement_speed));
+	}
+	if (key == 'D')
+	{
+		m_camera_pos = DirectX::XMVectorSubtract(m_camera_pos, DirectX::XMVectorScale(m_camera_right, delta_time * this->m_movement_speed));
+	}
+	if (key == VK_SPACE)
+	{
+		m_camera_pos = DirectX::XMVectorAdd(m_camera_pos, DirectX::XMVectorScale(m_camera_up, delta_time * this->m_movement_speed));
+	}
+	if (key == VK_LSHIFT)
+	{
+		m_camera_pos = DirectX::XMVectorSubtract(m_camera_pos, DirectX::XMVectorScale(m_camera_up, delta_time * this->m_movement_speed));
+	}
 }
 
-void Camera::SetRotation(float x, float y, float z)
+void Camera::MouseControl(int x, int y)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
-	return;
+	x *= m_mouse_sensitive;
+	y *= m_mouse_sensitive;
+
+	m_yaw -= x;
+	m_pitch -= y;
+
+	if (m_pitch > 89.0f)
+	{
+		m_pitch = 89.0f;
+	}
+
+	if (m_pitch < -89.0f)
+	{
+		m_pitch = -89.0f;
+	}
 }
 
-DirectX::XMFLOAT3 Camera::GetPosition()
+void Camera::UpdateViewMatrix()
 {
-	return DirectX::XMFLOAT3({m_positionX, m_positionY, m_positionZ});
-}
+	DirectX::XMVECTOR front{
+		cos(DirectX::XMConvertToRadians(m_yaw))* cos(DirectX::XMConvertToRadians(m_pitch)),
+		sin(DirectX::XMConvertToRadians(m_pitch)),
+		sin(DirectX::XMConvertToRadians(m_yaw))* cos(DirectX::XMConvertToRadians(m_pitch))};
+	front = DirectX::XMVector3Normalize(front);
+	m_camera_front = front;
 
-DirectX::XMFLOAT3 Camera::GetRotation()
-{
-	return DirectX::XMFLOAT3({m_rotationX, m_rotationY, m_rotationZ});
-}
-
-void Camera::Render()
-{
-	XMFLOAT3 up{}, position{};
-	XMVECTOR upVector, positionVector;
-	float yaw, pitch, roll;
-	XMMATRIX rotationMatrix;
-
-
-	// Setup the vector that points upwards.
-	up.x = 0.0f;
-	up.y = 1.0f;
-	up.z = 0.0f;
-
-	// Load it into a XMVECTOR structure.
-	upVector = XMLoadFloat3(&up);
-
-	// Setup the position of the camera in the world.
-	position.x = m_positionX;
-	position.y = m_positionY;
-	position.z = m_positionZ;
-
-	// Load it into a XMVECTOR structure.
-	positionVector = XMLoadFloat3(&position);
-
-	// Setup where the camera is looking by default.
-
-	// Load it into a XMVECTOR structur
-	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * 0.0174532925f;
-	yaw = m_rotationY * 0.0174532925f;
-	roll = m_rotationZ * 0.0174532925f;
-
-	// Create the rotation matrix from the yaw, pitch, and roll values.
-	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
-
-	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
-	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
-	upVector = XMVector3TransformCoord(upVector, rotationMatrix);
-
-	// Translate the rotated camera position to the location of the viewer.
-	lookAtVector = XMVectorAdd(positionVector, lookAtVector);
-
-	// Finally create the view matrix from the three updated vectors.
-	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
-
-	return;
+	m_camera_right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(m_camera_front, m_world_up));
+	m_camera_up = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(m_camera_right, m_camera_front));
 }
 
 DirectX::XMMATRIX Camera::GetViewMatrix()
 {
-	return m_viewMatrix;
+	return DirectX::XMMatrixLookAtLH(m_camera_pos, DirectX::XMVectorAdd(m_camera_pos, m_camera_front), m_camera_up);
 }
-
-DirectX::XMVECTOR Camera::GetLookAtVector()
-{
-	return this->lookAtVector;
-}
+// Path: GameWindow.cpp
