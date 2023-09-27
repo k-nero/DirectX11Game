@@ -12,7 +12,7 @@ public:
 	~Camera();
 	
 	void KeyControl(int keys, float delta_time);
-	void MouseControl(int x, int y);
+	void MouseControl(float x, float y);
 	void UpdateViewMatrix();
 	DirectX::XMMATRIX GetViewMatrix();
 

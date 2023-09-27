@@ -1,11 +1,11 @@
 #pragma once
-#include "GraphicsEngine.h"
-#include <wrl/client.h>
+#include "Renderer.h"
+#include "Prerequisites.h"
 
 class VertexBuffer 
 {
 public:
-	VertexBuffer();
+	VertexBuffer(Renderer* renderer);
 	bool Load( void* list_vertices, unsigned int size_vertex, unsigned int size_list, const void* shader_byte_code, size_t size_byte_shader);
 	void Release();
 	~VertexBuffer();
@@ -20,6 +20,5 @@ private:
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_layout = nullptr;
-
+	Renderer* m_renderer = nullptr;
 };
-

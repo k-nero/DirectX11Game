@@ -31,7 +31,7 @@ void GameWindow::OnCreate()
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
 	g_pGraphics_engine->Initialize();
-	m_swap_chain = g_pGraphics_engine->CreateSwapChain();
+	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();
 	auto client = this->GetClient();
 	m_swap_chain->Initialize(this->m_hWnd, client.right - client.left, client.bottom - client.top, false);
 
@@ -68,24 +68,24 @@ void GameWindow::OnCreate()
 		1, 0, 7,
 	};
 	unsigned int index_list_size = (sizeof(*RtlpNumberOf(index_list)));
-	m_ib = g_pGraphics_engine->CreateIndexBuffer();
+	m_ib = g_pGraphics_engine->GetRenderer()->CreateIndexBuffer();
 	m_ib->Load(index_list, index_list_size);
 
-	m_vb = g_pGraphics_engine->CreateVertexBuffer();
+	m_vb = g_pGraphics_engine->GetRenderer()->CreateVertexBuffer();
 
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
-	g_pGraphics_engine->CompileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &size_shader);
-	m_vs = g_pGraphics_engine->CreateVertexShader(shader_byte_code, size_shader);
+	g_pGraphics_engine->GetRenderer()->CompileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &size_shader);
+	m_vs = g_pGraphics_engine->GetRenderer()->CreateVertexShader(shader_byte_code, size_shader);
 	m_vb->Load(list, sizeof(Vertex), (sizeof(*RtlpNumberOf(list))), shader_byte_code, size_shader);
-	g_pGraphics_engine->ReleaseCompiledShader();
+	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
-	g_pGraphics_engine->CompilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &size_shader);
-	m_ps = g_pGraphics_engine->CreatePixelShader(shader_byte_code, size_shader);
-	g_pGraphics_engine->ReleaseCompiledShader();
+	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &size_shader);
+	m_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
+	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
 	constant cbuffer = { 0 };
-	m_cb = g_pGraphics_engine->CreateConstantBuffer();
+	m_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();
 	m_cb->Load(&cbuffer, sizeof(constant));
 }
 
@@ -101,7 +101,7 @@ void GameWindow::OnUpdate()
 	RECT rc = this->GetClient();
 	InputSystem::Get()->Update();
 	m_camera->UpdateViewMatrix();
-	auto context = g_pGraphics_engine->GetImmediateDeviceContext();
+	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
 	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 

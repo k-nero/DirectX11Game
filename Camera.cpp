@@ -54,7 +54,7 @@ void Camera::KeyControl(int key, float delta_time)
 	}
 }
 
-void Camera::MouseControl(int x, int y)
+void Camera::MouseControl(float x, float y)
 {
 	x *= m_mouse_sensitive;
 	y *= m_mouse_sensitive;
@@ -76,9 +76,9 @@ void Camera::MouseControl(int x, int y)
 void Camera::UpdateViewMatrix()
 {
 	DirectX::XMVECTOR front{
-		cos(DirectX::XMConvertToRadians(m_yaw))* cos(DirectX::XMConvertToRadians(m_pitch)),
+		cos(DirectX::XMConvertToRadians(m_yaw)) * cos(DirectX::XMConvertToRadians(m_pitch)),
 		sin(DirectX::XMConvertToRadians(m_pitch)),
-		sin(DirectX::XMConvertToRadians(m_yaw))* cos(DirectX::XMConvertToRadians(m_pitch))};
+		sin(DirectX::XMConvertToRadians(m_yaw)) * cos(DirectX::XMConvertToRadians(m_pitch))};
 	front = DirectX::XMVector3Normalize(front);
 	m_camera_front = front;
 

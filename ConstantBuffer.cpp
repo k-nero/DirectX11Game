@@ -1,6 +1,10 @@
 #include "ConstantBuffer.h"
 
-ConstantBuffer::ConstantBuffer() = default;
+ConstantBuffer::ConstantBuffer(Renderer* renderer) : m_renderer(renderer)
+{
+
+}
+
 
 bool ConstantBuffer::Load(void* buffer, unsigned size)
 {
@@ -15,7 +19,7 @@ bool ConstantBuffer::Load(void* buffer, unsigned size)
 	D3D11_SUBRESOURCE_DATA data = {};
 	data.pSysMem = buffer;
 
-	auto hr = GraphicsEngine::Get()->GetDevice()->CreateBuffer(&desc, &data, &m_buffer);
+	auto hr = m_renderer->GetDevice()->CreateBuffer(&desc, &data, &m_buffer);
 
 	return hr >= 0x0L ? true : false;
 }

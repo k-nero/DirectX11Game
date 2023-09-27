@@ -1,12 +1,14 @@
 #include "SwapChain.h"
-#include <wrl/client.h>
 
-SwapChain::SwapChain() = default;
+SwapChain::SwapChain(Renderer* renderer) : m_renderer(renderer)
+{
+
+}
 
 bool SwapChain::Initialize(HWND hwnd, unsigned int width, unsigned int height, bool fullscreen)
 {
 
-	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice = GraphicsEngine::Get()->GetDevice();
+	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice = m_renderer->GetDevice();
 	DXGI_SWAP_CHAIN_DESC desc;
 	memset(&desc, 0, sizeof(desc));
 	desc.BufferCount = 2;
@@ -24,7 +26,7 @@ bool SwapChain::Initialize(HWND hwnd, unsigned int width, unsigned int height, b
 	desc.Windowed = !fullscreen;
 	desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	__int64 hr = GraphicsEngine::Get()->GetDXGIFactory()->CreateSwapChain(m_pDevice.Get(), &desc, &m_swapChain);
+	__int64 hr = m_renderer->GetDXGIFactory()->CreateSwapChain(m_pDevice.Get(), &desc, &m_swapChain);
 
 	if (hr < 0x0L)
 	{

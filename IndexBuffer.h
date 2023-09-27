@@ -1,12 +1,11 @@
 #pragma once
-#include <wrl/client.h>
-#include <d3d11.h>
-#include "GraphicsEngine.h"
+#include "Renderer.h"
+#include "Prerequisites.h"
 
 class IndexBuffer
 {
 public:
-	IndexBuffer();
+	IndexBuffer(Renderer* renderer);
 	bool Load(void* list_indices, UINT size_list);
 	unsigned int GetIndexListSize() const;
 	void Release();
@@ -16,5 +15,6 @@ public:
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
 	unsigned int m_size_list = 0;
+	Renderer* m_renderer = nullptr;
 };
 

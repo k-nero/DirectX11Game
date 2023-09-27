@@ -1,8 +1,7 @@
 #include "DeviceContext.h"
 
-DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext):m_deviceContext(deviceContext)
+DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext) : m_deviceContext(deviceContext)
 {
-
 }
 
 void DeviceContext::ClearRenderTargetView(ID3D11RenderTargetView* renderTargetView, float red, float green, float blue, float alpha) const

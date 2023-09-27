@@ -1,14 +1,6 @@
 #pragma once
-#include <d3d11.h>
-#include "GraphicsEngine.h"
-#include <wrl/client.h>
-#include "IndexBuffer.h"
-
-class VertexBuffer;
-class VertexShader;
-class PixelShader;
-class ConstantBuffer;
-class IndexBuffer;
+#include "Renderer.h"
+#include "Prerequisites.h"
 
 class DeviceContext
 {

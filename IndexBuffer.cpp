@@ -1,6 +1,6 @@
 #include "IndexBuffer.h"
 
-IndexBuffer::IndexBuffer()
+IndexBuffer::IndexBuffer(Renderer* renderer): m_renderer(renderer)
 {
 }
 
@@ -18,7 +18,7 @@ bool IndexBuffer::Load(void* list_indices, UINT size_list)
 	data.pSysMem = list_indices;
 	this->m_size_list = size_list;
 
-	auto hr = GraphicsEngine::Get()->GetDevice()->CreateBuffer(&desc, &data, &m_buffer);
+	auto hr = m_renderer->GetDevice()->CreateBuffer(&desc, &data, &m_buffer);
 
 	return hr >= 0x0L ? true : false;
 }
