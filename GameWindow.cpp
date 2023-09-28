@@ -4,7 +4,6 @@ using namespace DirectX;
 
 __declspec(align(16)) struct constant
 {
-	float time;
 	DirectX::XMMATRIX m_world;
 	DirectX::XMMATRIX m_view;
 	DirectX::XMMATRIX m_projection;
@@ -12,8 +11,8 @@ __declspec(align(16)) struct constant
 
 struct Vertex
 {
-	XMFLOAT3 position;
-	XMFLOAT3 color;
+	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT2 texcoord;
 };
 
 GameWindow::GameWindow() = default;
@@ -26,46 +25,88 @@ GameWindow::~GameWindow()
 void GameWindow::OnCreate()
 {
 	Window::OnCreate();
-	m_camera = std::make_shared<Camera>(Camera({ 0, 0, 2 }, { 0, 1, 0 }, -90.0f, 0.0f, 1.0f, 0.2f));
 	InputSystem::Get()->AddListener(this);
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
 	g_pGraphics_engine->Initialize();
+
+	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\wood.jpg");
+
 	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();
 	auto client = this->GetClient();
 	m_swap_chain->Initialize(this->m_hWnd, client.right - client.left, client.bottom - client.top, false);
 
+	DirectX::XMFLOAT3 position_list[] =
+	{
+		 DirectX::XMFLOAT3{-0.5f, -0.5f, -0.5f},
+		 DirectX::XMFLOAT3{-0.5f, 0.5f, -0.5f},
+		 DirectX::XMFLOAT3{0.5f, 0.5f, -0.5f},
+		 DirectX::XMFLOAT3{0.5f, -0.5f, -0.5f},
+
+		 DirectX::XMFLOAT3{0.5f, -0.5f, 0.5f},
+		 DirectX::XMFLOAT3{0.5f, 0.5f, 0.5f},
+		 DirectX::XMFLOAT3{-0.5f, 0.5f, 0.5f},
+		 DirectX::XMFLOAT3{-0.5f, -0.5f, 0.5f}
+	};
+
+	DirectX::XMFLOAT2 texcoord_list[] =
+	{
+		DirectX::XMFLOAT2{0.0f, 0.0f},
+		DirectX::XMFLOAT2{0.0f, 1.0f},
+		DirectX::XMFLOAT2{1.0f, 0.0f},
+		DirectX::XMFLOAT2{1.0f, 1.0f},
+	};
+
 	Vertex list[] =
 	{
-		{ XMFLOAT3{-0.5f, -0.5f, -0.5f}, XMFLOAT3{1, 0, 0}},
-		{ XMFLOAT3{-0.5f, 0.5f, -0.5f}, XMFLOAT3{0, 1, 0} },
-		{ XMFLOAT3{0.5f, 0.5f, -0.5f}, XMFLOAT3{0, 0, 1} },
-		{ XMFLOAT3{0.5f, -0.5f, -0.5f}, XMFLOAT3{1, 1, 1} },
-		{ XMFLOAT3{0.5f, -0.5f, 0.5f}, XMFLOAT3{1, 1, 1} },
-		{ XMFLOAT3{0.5f, 0.5f, 0.5f}, XMFLOAT3{0, 0, 1} },
-		{ XMFLOAT3{-0.5f, 0.5f, 0.5f}, XMFLOAT3{0, 1, 0} },
-		{ XMFLOAT3{-0.5f, -0.5f, 0.5f}, XMFLOAT3{1, 0, 0}},
+		{ position_list[0],texcoord_list[1] },
+		{ position_list[1],texcoord_list[0] },
+		{ position_list[2],texcoord_list[2] },
+		{ position_list[3],texcoord_list[3] },
+
+
+		{ position_list[4],texcoord_list[1] },
+		{ position_list[5],texcoord_list[0] },
+		{ position_list[6],texcoord_list[2] },
+		{ position_list[7],texcoord_list[3] },
+
+
+		{ position_list[1],texcoord_list[1] },
+		{ position_list[6],texcoord_list[0] },
+		{ position_list[5],texcoord_list[2] },
+		{ position_list[2],texcoord_list[3] },
+
+		{ position_list[7],texcoord_list[1] },
+		{ position_list[0],texcoord_list[0] },
+		{ position_list[3],texcoord_list[2] },
+		{ position_list[4],texcoord_list[3] },
+
+		{ position_list[3],texcoord_list[1] },
+		{ position_list[2],texcoord_list[0] },
+		{ position_list[5],texcoord_list[2] },
+		{ position_list[4],texcoord_list[3] },
+
+		{ position_list[7],texcoord_list[1] },
+		{ position_list[6],texcoord_list[0] },
+		{ position_list[1],texcoord_list[2] },
+		{ position_list[0],texcoord_list[3] }
 	};
 
 	unsigned int index_list[] =
 	{
-		0, 1, 2,
-		2, 3, 0,
+		0,1,2, 
+		2,3,0, 
+		4,5,6,
+		6,7,4,
+		8,9,10,
+		10,11,8,
+		12,13,14,
+		14,15,12,
+		16,17,18,
+		18,19,16,
+		20,21,22,
+		22,23,20
 
-		4, 5, 6,
-		6, 7, 4,
-
-		1, 6, 5,
-		5, 2, 1,
-
-		7, 0, 3,
-		3, 4, 7,
-
-		3, 2, 5,
-		5, 4, 3,
-
-		7, 6, 1,
-		1, 0, 7,
 	};
 	unsigned int index_list_size = (sizeof(*RtlpNumberOf(index_list)));
 	m_ib = g_pGraphics_engine->GetRenderer()->CreateIndexBuffer();
@@ -84,7 +125,7 @@ void GameWindow::OnCreate()
 	m_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
-	constant cbuffer = { 0 };
+	constant cbuffer = { };
 	m_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();
 	m_cb->Load(&cbuffer, sizeof(constant));
 }
@@ -100,22 +141,24 @@ void GameWindow::OnUpdate()
 	Window::OnUpdate();
 	RECT rc = this->GetClient();
 	InputSystem::Get()->Update();
-	m_camera->UpdateViewMatrix();
+	g_pGraphics_engine->GetCamera()->UpdateViewMatrix();
 	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
 	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
 
 	constant cbuffer{};
-	cbuffer.time = 0.6f;
 	cbuffer.m_world = DirectX::XMMatrixIdentity();
-	cbuffer.m_view = m_camera->GetViewMatrix();
+	cbuffer.m_view = g_pGraphics_engine->GetCamera()->GetViewMatrix();
 	cbuffer.m_projection = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
 
 	m_cb->Update(context, &cbuffer);
 
 	context->SetConstantBuffer(m_vs.get(), m_cb.get());
 	context->SetConstantBuffer(m_ps.get(), m_cb.get());
+
+	context->SetTexture(m_ps.get(), m_texture.get());
+	context->SetTexture(m_vs.get(), m_texture.get());
 
 	context->SetVertexShader(m_vs.get());
 	context->SetPixelShader(m_ps.get());
@@ -143,7 +186,7 @@ void GameWindow::OnUnFocus()
 
 void GameWindow::OnKeyDown(int key)
 {
-	m_camera->KeyControl(key, m_delta_time);
+	g_pGraphics_engine->GetCamera()->KeyControl(key, m_delta_time);
 	if (key == VK_ESCAPE)
 	{
 		this->m_play_state = !this->m_play_state;
@@ -162,7 +205,7 @@ void GameWindow::OnMouseMove(const DirectX::XMFLOAT2& mouse_position)
 	POINT center = { (rc.right - rc.left) / 2, (rc.bottom - rc.top) / 2 };
 	if (m_play_state)
 	{
-		m_camera->MouseControl(mouse_position.x - center.x, mouse_position.y - center.y);
+		g_pGraphics_engine->GetCamera()->MouseControl(mouse_position.x - center.x, mouse_position.y - center.y);
 		InputSystem::Get()->SetCursorPosition(center);
 	}
 

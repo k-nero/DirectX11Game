@@ -8,3 +8,7 @@ class PixelShader;
 class IndexBuffer;
 class Renderer;
 class GraphicsEngine;
+class Resource;
+class ResourceManager;
+class Texture;
+class TextureManager;

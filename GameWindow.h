@@ -41,6 +41,7 @@ private:
 	std::shared_ptr<PixelShader> m_ps = nullptr;
 	std::shared_ptr<ConstantBuffer> m_cb = nullptr;
 	std::shared_ptr<IndexBuffer> m_ib = nullptr;
+	std::shared_ptr<Texture> m_texture = nullptr;
 private:
 	float m_rot_x = 0.0f;
 	float m_rot_y = 0.0f;
@@ -50,9 +51,6 @@ private:
 	float m_delta_time = 0.0f;
 
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
-
-	std::shared_ptr<Camera> m_camera = nullptr;
-
 	bool m_play_state = true;
 };
 

@@ -10,12 +10,6 @@
     <Filter Include="Engine\Window">
       <UniqueIdentifier>{f606aba0-9120-43e2-a32b-6c1f09c72cc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Header Files">
-      <UniqueIdentifier>{27d8a636-fd03-4429-a99e-33c1111d6bc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Source Files">
-      <UniqueIdentifier>{49face33-a124-49de-b844-645565306cf2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Graphic">
       <UniqueIdentifier>{161833cc-51cf-4b1f-bafb-cd9bd8d2aa1f}</UniqueIdentifier>
     </Filter>
@@ -52,13 +46,25 @@
     <Filter Include="Engine\Graphic\Camera">
       <UniqueIdentifier>{94dcda6e-016e-471a-8ec1-7f964acf7558}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphic\Resource Manager">
+      <UniqueIdentifier>{079f81e7-0201-4107-a15e-5569ba7e89bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphic\Resource Manager\Texture Manager">
+      <UniqueIdentifier>{85760b53-10a0-47c3-91ee-2f913e5e3409}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Resource">
+      <UniqueIdentifier>{e75376e5-a670-4a21-b2b3-7aa79b3337e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Resource\Assest">
+      <UniqueIdentifier>{079a4a28-16f0-4f0e-b417-5572a4ef2d34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Resource\Assest\Textures">
+      <UniqueIdentifier>{1b4914cf-5c03-4996-bf15-5c3e3a664f42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="GameWindow.cpp">
-      <Filter>Game\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Engine\Window</Filter>
@@ -96,11 +102,23 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Engine\Graphic\Render Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Engine\Graphic\Resource Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Engine\Graphic\Resource Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Graphic\Resource Manager\Texture Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Engine\Graphic\Resource Manager\Texture Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameWindow.h">
-      <Filter>Game\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Engine\Window</Filter>
     </ClInclude>
@@ -143,6 +161,21 @@
     <ClInclude Include="Renderer.h">
       <Filter>Engine\Graphic\Render Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Engine\Graphic\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Engine\Graphic\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Graphic\Resource Manager\Texture Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Engine\Graphic\Resource Manager\Texture Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -151,5 +184,10 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assests\Textures\wood.jpg">
+      <Filter>Game\Resource\Assest\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

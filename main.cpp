@@ -26,6 +26,11 @@ int __stdcall WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ P
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 	_CrtSetReportHook(&reportHook);
 #endif
+	HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 	GameWindow game;
 	if (game.Initialize())
 	{
@@ -34,7 +39,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ P
 			game.Broadcast();
 		}
 	}
-
+	CoUninitialize();
 #if defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif

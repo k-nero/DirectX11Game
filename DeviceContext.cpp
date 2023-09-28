@@ -68,14 +68,26 @@ void DeviceContext::SetViewportSize(unsigned width, unsigned height) const
 
 void DeviceContext::SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const
 {
-	Microsoft::WRL::ComPtr<ID3D11Buffer> bufferPtr = buffer->GetBuffer();
-	m_deviceContext->VSSetConstantBuffers(0, 1, bufferPtr.GetAddressOf());
+	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
+	m_deviceContext->VSSetConstantBuffers(0, 1, &bufferPtr);
 }
 
 void DeviceContext::SetConstantBuffer(PixelShader* pixelShader, ConstantBuffer* buffer) const
 {
-	Microsoft::WRL::ComPtr<ID3D11Buffer> bufferPtr = buffer->GetBuffer();
-	m_deviceContext->PSSetConstantBuffers(0, 1, bufferPtr.GetAddressOf());
+	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
+	m_deviceContext->PSSetConstantBuffers(0, 1, &bufferPtr);
+}
+
+void DeviceContext::SetTexture(VertexShader* vertexShader, Texture* texture) const
+{
+	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
+	m_deviceContext->VSSetShaderResources(0, 1, &resourceView);
+}
+
+void DeviceContext::SetTexture(PixelShader* pixelShader, Texture* texture) const
+{
+	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
+	m_deviceContext->PSSetShaderResources(0, 1, &resourceView);
 }
 
 void DeviceContext::Release()

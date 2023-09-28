@@ -1,7 +1,7 @@
 #pragma once
-#include "Renderer.h"
 #include "Prerequisites.h"
-
+#include "Renderer.h"
+#include "Texture.h"
 class DeviceContext
 {
 public:
@@ -17,6 +17,8 @@ public:
 	void SetViewportSize(unsigned width, unsigned height) const;
 	void SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const;
 	void SetConstantBuffer(PixelShader* pixelShader, ConstantBuffer* buffer) const;
+	void SetTexture(VertexShader* vertexShader, Texture* texture) const;
+	void SetTexture(PixelShader* pixelShader, Texture* texture) const;
 	void Release();
 	~DeviceContext();
 public:
