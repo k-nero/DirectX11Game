@@ -2,7 +2,7 @@
 #include "IInputListener.h"
 #include <map>
 #include <Windows.h>
-#include <DirectXMath.h>
+#include <directxmath/DirectXMath.h>
 class InputSystem
 {
 public:

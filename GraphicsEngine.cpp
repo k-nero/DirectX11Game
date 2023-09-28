@@ -6,7 +6,7 @@ GraphicsEngine::GraphicsEngine()
 
 void GraphicsEngine::Initialize()
 {
-	m_renderer = std::make_shared<Renderer>();
+	m_renderer = std::make_unique<Renderer>();
 	m_renderer->Initialize();
 }
 

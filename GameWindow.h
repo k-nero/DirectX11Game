@@ -1,5 +1,4 @@
 #pragma once
-#include <DirectXMath.h>
 #include <memory>
 #include "Window.h"
 #include "GraphicsEngine.h"

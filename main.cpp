@@ -1,5 +1,4 @@
 #if defined(_DEBUG)
-	#define _CRTDBG_MAP_ALLOC
 	#include <stdlib.h>
 	#include <crtdbg.h>
 #endif
@@ -11,9 +10,7 @@
 #ifdef _DEBUG
 int reportHook(int reportType, char* userMessage, int* retVal) {
 	if (reportType == _CRT_ASSERT) {
-		// Print detailed error message
-		//_CrtDbgReport(_CRT_ASSERT, NULL, 0, NULL, "%s", userMessage); [wrong] It's a recursive function that causes an infinite loop.
-		std::cout << userMessage << std::endl; // <-- This should show a message box, but it doesn't show because 'reportHook' is not called.
+		std::cout << userMessage << std::endl;
 		return TRUE;
 	}
 	return FALSE;
@@ -39,8 +36,8 @@ int __stdcall WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ P
 	}
 
 #if defined(_DEBUG)
-
 	_CrtDumpMemoryLeaks();
 #endif
 	return 0;
 }
+

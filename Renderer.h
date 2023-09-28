@@ -1,7 +1,8 @@
 #pragma once
 #include <d3d11.h>
-#include <iostream>
 #include <memory>
+#include <iostream>
+#include <string>
 #include <d3dcompiler.h>
 #include <wrl/client.h>
 #include "SwapChain.h"

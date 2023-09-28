@@ -7,9 +7,10 @@ Renderer::Renderer()
 bool Renderer::Initialize()
 {
 	D3D_DRIVER_TYPE driverTypes[] = {
+		D3D_DRIVER_TYPE_NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
-		D3D_DRIVER_TYPE_WARP,
 		D3D_DRIVER_TYPE_REFERENCE,
+		D3D_DRIVER_TYPE_WARP,
 		D3D_DRIVER_TYPE_SOFTWARE
 	};
 
@@ -33,6 +34,13 @@ bool Renderer::Initialize()
 			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), IID_PPV_ARGS_Helper(&m_pDXGIAdapter));
 			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), IID_PPV_ARGS_Helper(&m_pDXGIFactory));
 #if defined(_DEBUG)
+
+			DXGI_ADAPTER_DESC desc;
+			m_pDXGIAdapter->GetDesc(&desc);
+			wchar_t buff[256] = {};
+			swprintf_s(buff, L"Direct3D Adapter: VID:%04X, PID:%04X - %ls\n", desc.VendorId, desc.DeviceId, desc.Description);
+			OutputDebugStringW(buff);
+
 			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), IID_PPV_ARGS_Helper(&m_debug));
 			m_debug->SetFeatureMask(0x3U);
 			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
@@ -57,6 +65,7 @@ void Renderer::Shutdown()
 
 Renderer::~Renderer()
 {
+	
 }
 
 std::shared_ptr<SwapChain> Renderer::CreateSwapChain()
