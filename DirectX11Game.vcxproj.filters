@@ -61,6 +61,9 @@
     <Filter Include="Game\Resource\Assest\Textures">
       <UniqueIdentifier>{1b4914cf-5c03-4996-bf15-5c3e3a664f42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphic\Resource Manager\Mesh Manager">
+      <UniqueIdentifier>{377de487-dec5-433e-ab92-626df385ba11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -116,6 +119,15 @@
     </ClCompile>
     <ClCompile Include="GameWindow.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Graphic\Resource Manager\Mesh Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshManager.cpp">
+      <Filter>Engine\Graphic\Resource Manager\Mesh Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStructure.h">
+      <Filter>Engine\Graphic\Render Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +188,12 @@
     <ClInclude Include="GameWindow.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="MeshManager.h">
+      <Filter>Engine\Graphic\Resource Manager\Mesh Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Graphic\Resource Manager\Mesh Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -187,6 +205,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assests\Textures\wood.jpg">
+      <Filter>Game\Resource\Assest\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\diamond.png">
       <Filter>Game\Resource\Assest\Textures</Filter>
     </Image>
   </ItemGroup>

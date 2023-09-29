@@ -137,12 +137,15 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="DataStructure.h" />
     <ClCompile Include="DeviceContext.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Resource.cpp" />
@@ -163,6 +166,8 @@
     <ClInclude Include="IInputListener.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshManager.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Prerequisites.h" />
     <ClInclude Include="Renderer.h" />
@@ -202,6 +207,7 @@
     <Image Include="Assests\Textures\wood.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Assets\Textures\diamond.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

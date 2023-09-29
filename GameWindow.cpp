@@ -2,25 +2,7 @@
 
 using namespace DirectX;
 
-__declspec(align(16)) struct constant
-{
-	DirectX::XMMATRIX m_world;
-	DirectX::XMMATRIX m_view;
-	DirectX::XMMATRIX m_projection;
-};
-
-struct Vertex
-{
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT2 texcoord;
-};
-
 GameWindow::GameWindow() = default;
-
-GameWindow::~GameWindow()
-{
-
-}
 
 void GameWindow::OnCreate()
 {
@@ -30,7 +12,7 @@ void GameWindow::OnCreate()
 	g_pGraphics_engine = GraphicsEngine::Get();
 	g_pGraphics_engine->Initialize();
 
-	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\wood.jpg");
+	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\diamond.png");
 
 	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();
 	auto client = this->GetClient();
@@ -157,8 +139,10 @@ void GameWindow::OnUpdate()
 	context->SetConstantBuffer(m_vs.get(), m_cb.get());
 	context->SetConstantBuffer(m_ps.get(), m_cb.get());
 
-	context->SetTexture(m_ps.get(), m_texture.get());
-	context->SetTexture(m_vs.get(), m_texture.get());
+	context->SetTextureShaderResource(m_ps.get(), m_texture.get());
+	context->SetTextureShaderResource(m_vs.get(), m_texture.get());
+	context->SetSamplerState(m_ps.get(), m_texture.get());
+	context->SetSamplerState(m_vs.get(), m_texture.get());
 
 	context->SetVertexShader(m_vs.get());
 	context->SetPixelShader(m_ps.get());
@@ -230,3 +214,5 @@ void GameWindow::OnLeftMouseUp(const DirectX::XMFLOAT2& mouse_position)
 {
 
 }
+
+GameWindow::~GameWindow() = default;

@@ -11,6 +11,7 @@
 #include "IInputListener.h"
 #include "InputSystem.h"
 #include "Camera.h"
+#include "DataStructure.h"
 
 class GameWindow : public Window, public IInputListener
 {

@@ -78,16 +78,28 @@ void DeviceContext::SetConstantBuffer(PixelShader* pixelShader, ConstantBuffer* 
 	m_deviceContext->PSSetConstantBuffers(0, 1, &bufferPtr);
 }
 
-void DeviceContext::SetTexture(VertexShader* vertexShader, Texture* texture) const
+void DeviceContext::SetTextureShaderResource(VertexShader* vertexShader, Texture* texture) const
 {
 	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
 	m_deviceContext->VSSetShaderResources(0, 1, &resourceView);
 }
 
-void DeviceContext::SetTexture(PixelShader* pixelShader, Texture* texture) const
+void DeviceContext::SetTextureShaderResource(PixelShader* pixelShader, Texture* texture) const
 {
 	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
 	m_deviceContext->PSSetShaderResources(0, 1, &resourceView);
+}
+
+void DeviceContext::SetSamplerState(VertexShader* vertexShader, Texture* texture) const
+{
+	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
+	m_deviceContext->VSSetSamplers(0, 1, &sampler_state);
+}
+
+void DeviceContext::SetSamplerState(PixelShader* pixelShader, Texture* texture) const
+{
+	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
+	m_deviceContext->PSSetSamplers(0, 1, &sampler_state);
 }
 
 void DeviceContext::Release()
