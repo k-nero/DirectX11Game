@@ -11,7 +11,6 @@ MeshManager::~MeshManager()
 std::shared_ptr<Mesh> MeshManager::CreateMeshFromFile(const wchar_t* file_path)
 {
 	return std::static_pointer_cast<Mesh>(CreateResourceFromFile(file_path));
-	delete[] file_path;
 }
 
 Resource* MeshManager::CreateResourceFromFileConcrete(const wchar_t* file_path)

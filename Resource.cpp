@@ -7,4 +7,5 @@ Resource::Resource(const wchar_t* full_path)
 
 Resource::~Resource()
 {
+	m_resource_path.clear();
 }

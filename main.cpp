@@ -8,7 +8,7 @@
 
 
 #ifdef _DEBUG
-int reportHook(int reportType, char* userMessage, int* retVal) {
+int reportHook(int reportType, char* userMessage, int* ) {
 	if (reportType == _CRT_ASSERT) {
 		std::cout << userMessage << std::endl;
 		return TRUE;
@@ -18,11 +18,14 @@ int reportHook(int reportType, char* userMessage, int* retVal) {
 #endif // DEBUG
 
 
-int __stdcall WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hInstPrev, _In_ PSTR cmdline, _In_ int cmdshow)
+int __stdcall WinMain(_In_ HINSTANCE , _In_opt_ HINSTANCE , _In_ PSTR , _In_ int )
 {
 
 #if defined(_DEBUG)
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	int tmpFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
+	_CrtSetDbgFlag(tmpFlag);
+
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 	_CrtSetReportHook(&reportHook);
 #endif

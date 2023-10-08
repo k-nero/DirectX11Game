@@ -7,12 +7,11 @@ VertexBuffer::VertexBuffer(Renderer* renderer) : m_renderer(renderer)
 
 bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned int list_size, const void* shader_byte_code, size_t shader_byte_size)
 {
-	//if (m_buffer)m_buffer->Release();
 	if (m_layout)m_layout->Release();
 
 	D3D11_BUFFER_DESC buffDesc = { vertex_size * list_size, D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0 };
 
-	D3D11_MAPPED_SUBRESOURCE init_data = {};
+	D3D11_MAPPED_SUBRESOURCE buffer_data = {};
 
 	this->m_vertex_size = vertex_size;
 	this->m_vertext_list_size = list_size;
@@ -25,8 +24,8 @@ bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned
 		}
 	}
 	
-	m_renderer->GetImmediateDeviceContext()->GetDeviceContext()->Map(m_buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &init_data);
-	memcpy(init_data.pData, list_vertices, static_cast<size_t>(vertex_size) * list_size);
+	m_renderer->GetImmediateDeviceContext()->GetDeviceContext()->Map(m_buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &buffer_data);
+	memcpy(buffer_data.pData, list_vertices, static_cast<size_t>(vertex_size) * list_size);
 	m_renderer->GetImmediateDeviceContext()->GetDeviceContext()->Unmap(m_buffer.Get(), NULL);
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =

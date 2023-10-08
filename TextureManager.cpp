@@ -11,7 +11,6 @@ TextureManager::~TextureManager()
 std::shared_ptr<Texture> TextureManager::CreateTextureFromFile(const wchar_t* file_path)
 {
 	return std::static_pointer_cast<Texture>(CreateResourceFromFile(file_path));
-	delete[] file_path;
 }
 
 Resource* TextureManager::CreateResourceFromFileConcrete(const wchar_t* file_path)

@@ -1,8 +1,7 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer()
-= default;
+Renderer::Renderer() = default;
 
 bool Renderer::Initialize()
 {

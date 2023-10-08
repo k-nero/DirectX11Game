@@ -1,9 +1,6 @@
 #pragma once
 #include "GraphicsEngine.h"
 #include "Resource.h"
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
 #include "DataStructure.h"
 
 class Mesh : public Resource
