@@ -7,7 +7,6 @@ Renderer::Renderer()
 bool Renderer::Initialize()
 {
 	D3D_DRIVER_TYPE driverTypes[] = {
-		D3D_DRIVER_TYPE_NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		D3D_DRIVER_TYPE_REFERENCE,
 		D3D_DRIVER_TYPE_WARP,

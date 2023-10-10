@@ -81,7 +81,6 @@ void Camera::UpdateViewMatrix()
 		sin(DirectX::XMConvertToRadians(m_yaw)) * cos(DirectX::XMConvertToRadians(m_pitch))};
 	front = DirectX::XMVector3Normalize(front);
 	m_camera_front = front;
-
 	m_camera_right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(m_camera_front, m_world_up));
 	m_camera_up = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(m_camera_right, m_camera_front));
 }
