@@ -15,6 +15,7 @@ public:
 	Renderer* GetRenderer();
 	TextureManager* GetTextureManager();
 	Camera* GetCamera();
+	void GetVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
 public:
 	static GraphicsEngine* Get();
 private:
@@ -23,4 +24,7 @@ private:
 	std::unique_ptr<Camera> m_camera = nullptr;
 
 	static GraphicsEngine* m_engine;
+
+	unsigned char* m_mesh_layout_byte_code = nullptr;
+	size_t m_mesh_layout_size = 0;
 };

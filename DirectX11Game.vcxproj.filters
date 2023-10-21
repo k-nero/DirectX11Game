@@ -202,6 +202,9 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="VetexMeshLayoutShader.hlsl">
+      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assests\Textures\wood.jpg">
