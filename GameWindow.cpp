@@ -10,98 +10,96 @@ void GameWindow::OnCreate()
 	InputSystem::Get()->AddListener(this);
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
-	g_pGraphics_engine->Initialize();
-
-	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\diamond.png");
+	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\brick.png");
 	m_mesh = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\teapot.obj");
 
 	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();
 	auto client = this->GetClient();
 	m_swap_chain->Initialize(this->m_hWnd, client.right - client.left, client.bottom - client.top, false);
 
-	DirectX::XMFLOAT3 position_list[] =
-	{
-		 DirectX::XMFLOAT3{-0.5f, -0.5f, -0.5f},
-		 DirectX::XMFLOAT3{-0.5f, 0.5f, -0.5f},
-		 DirectX::XMFLOAT3{0.5f, 0.5f, -0.5f},
-		 DirectX::XMFLOAT3{0.5f, -0.5f, -0.5f},
+	//DirectX::XMFLOAT3 position_list[] =
+	//{
+	//	 DirectX::XMFLOAT3{-0.5f, -0.5f, -0.5f},
+	//	 DirectX::XMFLOAT3{-0.5f, 0.5f, -0.5f},
+	//	 DirectX::XMFLOAT3{0.5f, 0.5f, -0.5f},
+	//	 DirectX::XMFLOAT3{0.5f, -0.5f, -0.5f},
 
-		 DirectX::XMFLOAT3{0.5f, -0.5f, 0.5f},
-		 DirectX::XMFLOAT3{0.5f, 0.5f, 0.5f},
-		 DirectX::XMFLOAT3{-0.5f, 0.5f, 0.5f},
-		 DirectX::XMFLOAT3{-0.5f, -0.5f, 0.5f}
-	};
+	//	 DirectX::XMFLOAT3{0.5f, -0.5f, 0.5f},
+	//	 DirectX::XMFLOAT3{0.5f, 0.5f, 0.5f},
+	//	 DirectX::XMFLOAT3{-0.5f, 0.5f, 0.5f},
+	//	 DirectX::XMFLOAT3{-0.5f, -0.5f, 0.5f}
+	//};
 
-	DirectX::XMFLOAT2 texcoord_list[] =
-	{
-		DirectX::XMFLOAT2{0.0f, 0.0f},
-		DirectX::XMFLOAT2{0.0f, 1.0f},
-		DirectX::XMFLOAT2{1.0f, 0.0f},
-		DirectX::XMFLOAT2{1.0f, 1.0f},
-	};
+	//DirectX::XMFLOAT2 texcoord_list[] =
+	//{
+	//	DirectX::XMFLOAT2{0.0f, 0.0f},
+	//	DirectX::XMFLOAT2{0.0f, 1.0f},
+	//	DirectX::XMFLOAT2{1.0f, 0.0f},
+	//	DirectX::XMFLOAT2{1.0f, 1.0f},
+	//};
 
-	Vertex list[] =
-	{
-		{ position_list[0],texcoord_list[1] },
-		{ position_list[1],texcoord_list[0] },
-		{ position_list[2],texcoord_list[2] },
-		{ position_list[3],texcoord_list[3] },
-
-
-		{ position_list[4],texcoord_list[1] },
-		{ position_list[5],texcoord_list[0] },
-		{ position_list[6],texcoord_list[2] },
-		{ position_list[7],texcoord_list[3] },
+	//Vertex list[] =
+	//{
+	//	{ position_list[0],texcoord_list[1] },
+	//	{ position_list[1],texcoord_list[0] },
+	//	{ position_list[2],texcoord_list[2] },
+	//	{ position_list[3],texcoord_list[3] },
 
 
-		{ position_list[1],texcoord_list[1] },
-		{ position_list[6],texcoord_list[0] },
-		{ position_list[5],texcoord_list[2] },
-		{ position_list[2],texcoord_list[3] },
+	//	{ position_list[4],texcoord_list[1] },
+	//	{ position_list[5],texcoord_list[0] },
+	//	{ position_list[6],texcoord_list[2] },
+	//	{ position_list[7],texcoord_list[3] },
 
-		{ position_list[7],texcoord_list[1] },
-		{ position_list[0],texcoord_list[0] },
-		{ position_list[3],texcoord_list[2] },
-		{ position_list[4],texcoord_list[3] },
 
-		{ position_list[3],texcoord_list[1] },
-		{ position_list[2],texcoord_list[0] },
-		{ position_list[5],texcoord_list[2] },
-		{ position_list[4],texcoord_list[3] },
+	//	{ position_list[1],texcoord_list[1] },
+	//	{ position_list[6],texcoord_list[0] },
+	//	{ position_list[5],texcoord_list[2] },
+	//	{ position_list[2],texcoord_list[3] },
 
-		{ position_list[7],texcoord_list[1] },
-		{ position_list[6],texcoord_list[0] },
-		{ position_list[1],texcoord_list[2] },
-		{ position_list[0],texcoord_list[3] }
-	};
+	//	{ position_list[7],texcoord_list[1] },
+	//	{ position_list[0],texcoord_list[0] },
+	//	{ position_list[3],texcoord_list[2] },
+	//	{ position_list[4],texcoord_list[3] },
 
-	unsigned int index_list[] =
-	{
-		0,1,2, 
-		2,3,0, 
-		4,5,6,
-		6,7,4,
-		8,9,10,
-		10,11,8,
-		12,13,14,
-		14,15,12,
-		16,17,18,
-		18,19,16,
-		20,21,22,
-		22,23,20
+	//	{ position_list[3],texcoord_list[1] },
+	//	{ position_list[2],texcoord_list[0] },
+	//	{ position_list[5],texcoord_list[2] },
+	//	{ position_list[4],texcoord_list[3] },
 
-	};
-	unsigned int index_list_size = (sizeof(*RtlpNumberOf(index_list)));
-	m_ib = g_pGraphics_engine->GetRenderer()->CreateIndexBuffer();
-	m_ib->Load(index_list, index_list_size);
+	//	{ position_list[7],texcoord_list[1] },
+	//	{ position_list[6],texcoord_list[0] },
+	//	{ position_list[1],texcoord_list[2] },
+	//	{ position_list[0],texcoord_list[3] }
+	//};
 
-	m_vb = g_pGraphics_engine->GetRenderer()->CreateVertexBuffer();
+	//unsigned int index_list[] =
+	//{
+	//	0,1,2, 
+	//	2,3,0, 
+	//	4,5,6,
+	//	6,7,4,
+	//	8,9,10,
+	//	10,11,8,
+	//	12,13,14,
+	//	14,15,12,
+	//	16,17,18,
+	//	18,19,16,
+	//	20,21,22,
+	//	22,23,20
+
+	//};
+	//unsigned int index_list_size = (sizeof(*RtlpNumberOf(index_list)));
+	//m_ib = g_pGraphics_engine->GetRenderer()->CreateIndexBuffer();
+	//m_ib->Load(index_list, index_list_size);
+
+	//m_vb = g_pGraphics_engine->GetRenderer()->CreateVertexBuffer();
 
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	g_pGraphics_engine->GetRenderer()->CompileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &size_shader);
 	m_vs = g_pGraphics_engine->GetRenderer()->CreateVertexShader(shader_byte_code, size_shader);
-	m_vb->Load(list, sizeof(Vertex), (sizeof(*RtlpNumberOf(list))), shader_byte_code, size_shader);
+	//m_vb->Load(list, sizeof(Vertex), (sizeof(*RtlpNumberOf(list))), shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
 	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &size_shader);
@@ -126,7 +124,7 @@ void GameWindow::OnUpdate()
 	InputSystem::Get()->Update();
 	g_pGraphics_engine->GetCamera()->UpdateViewMatrix();
 	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
-	context->ClearRenderTargetView(m_swap_chain->GetRenderTargetView(), 0.0f, 0.3f, 0.4f, 1.0f);
+	context->ClearRenderTargetView(m_swap_chain.get(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
 
@@ -147,14 +145,14 @@ void GameWindow::OnUpdate()
 
 	context->SetVertexShader(m_vs.get());
 	context->SetPixelShader(m_ps.get());
-	context->SetVertexBuffer(m_vb.get());
-	context->SetIndexBuffer(m_ib.get());
-	context->DrawIndexedTriangleList(m_ib.get()->GetIndexListSize(), 0, 0);
+	context->SetVertexBuffer(m_mesh->GetVertexBuffer());
+	context->SetIndexBuffer(m_mesh->GetIndexBuffer());
+	context->DrawIndexedTriangleList(m_mesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 
 	m_swap_chain->Present(true);
 
 	m_old_time = m_new_time;
-	m_new_time = GetTickCount();
+	m_new_time = GetTickCount64();
 
 	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
 }

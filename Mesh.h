@@ -11,8 +11,8 @@ class Mesh : public Resource
 public:
 	Mesh(const wchar_t* full_path);
 	~Mesh();
-	const VertexBuffer* GetVertexBuffer() const;
-	const IndexBuffer* GetIndexBuffer() const;
+	VertexBuffer* GetVertexBuffer() const;
+	IndexBuffer* GetIndexBuffer() const;
 private:
 	std::shared_ptr<VertexBuffer> m_vertex_buffer;
 	std::shared_ptr<IndexBuffer> m_index_buffer;

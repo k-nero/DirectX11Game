@@ -8,9 +8,11 @@ Mesh::Mesh(const wchar_t* full_path) : Resource(full_path)
 	size_t shader_by_code_size = 0;
 	GraphicsEngine::Get()->GetVertexMeshLayoutShaderByteCodeAndSize(&shader_byte_code, &shader_by_code_size);
 	this->m_vertex_buffer = GraphicsEngine::Get()->GetRenderer()->CreateVertexBuffer();
-	this->m_vertex_buffer->Load(&this->m_vertices, sizeof(Vertex), this->m_vertices.size(), shader_byte_code, shader_by_code_size);
+	//TIP: m_vertices.data() returns the pointer to the underlying array of the vector, &this->m_vertices[0] is the same, &this->m_vertices is the pointer to the vector itself (not the underlying array)
+	//using &this->m_vertices will cause the program to crash
+	this->m_vertex_buffer->Load(this->m_vertices.data(), sizeof(Vertex), this->m_vertices.size(), shader_byte_code, shader_by_code_size);
 	this->m_index_buffer = GraphicsEngine::Get()->GetRenderer()->CreateIndexBuffer();
-	this->m_index_buffer->Load(&this->m_indices, this->m_indices.size());
+	this->m_index_buffer->Load(this->m_indices.data(), this->m_indices.size());
 
 }
 
@@ -18,12 +20,12 @@ Mesh::~Mesh()
 {
 }
 	
-const VertexBuffer* Mesh::GetVertexBuffer() const
+VertexBuffer* Mesh::GetVertexBuffer() const
 {
 	return this->m_vertex_buffer.get();
 }
 
-const IndexBuffer* Mesh::GetIndexBuffer() const
+IndexBuffer* Mesh::GetIndexBuffer() const
 {
 	return this->m_index_buffer.get();
 }

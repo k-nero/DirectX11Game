@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "DataStructure.h"
 #include "MeshManager.h"
+#include "Mesh.h"
 
 class GameWindow : public Window, public IInputListener
 {
@@ -49,11 +50,10 @@ private:
 	float m_rot_x = 0.0f;
 	float m_rot_y = 0.0f;
 
-	DWORD m_old_time = 0;
-	DWORD m_new_time = 0;
+	ULONG64 m_old_time = 0;
+	ULONG64 m_new_time = 0;
 	float m_delta_time = 0.0f;
 
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
 	bool m_play_state = true;
 };
-

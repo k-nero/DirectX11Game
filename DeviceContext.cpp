@@ -4,11 +4,14 @@ DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext) : m_deviceConte
 {
 }
 
-void DeviceContext::ClearRenderTargetView(ID3D11RenderTargetView* renderTargetView, float red, float green, float blue, float alpha) const
+void DeviceContext::ClearRenderTargetView(SwapChain* swapchain, float red, float green, float blue, float alpha) const
 {
 	FLOAT clearColor[] = { red, green, blue, alpha };
+	auto renderTargetView = swapchain->GetRenderTargetView();
+	auto depthStencilView = swapchain->GetDepthStencilView();
 	m_deviceContext->ClearRenderTargetView(renderTargetView, clearColor);
-	m_deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
+	m_deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	m_deviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 }
 
 void DeviceContext::SetIndexBuffer(IndexBuffer* indexBuffer) const
@@ -68,6 +71,7 @@ void DeviceContext::SetViewportSize(unsigned width, unsigned height) const
 
 void DeviceContext::SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const
 {
+	vertexShader;
 	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
 	m_deviceContext->VSSetConstantBuffers(0, 1, &bufferPtr);
 }

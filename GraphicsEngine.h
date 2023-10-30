@@ -2,13 +2,13 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "TextureManager.h"
+#include "MeshManager.h"
 #include "Prerequisites.h"
 
 class GraphicsEngine
 {
 public:
 	GraphicsEngine();
-	void Initialize();
 	void Shutdown();
 	~GraphicsEngine();
 public:
@@ -26,6 +26,6 @@ private:
 	std::unique_ptr<MeshManager> m_mesh_manager = nullptr;
 	static GraphicsEngine* m_engine;
 
-	unsigned char* m_mesh_layout_byte_code = nullptr;
+	void* m_mesh_layout_byte_code;
 	size_t m_mesh_layout_size = 0;
 };

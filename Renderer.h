@@ -38,7 +38,6 @@ public:
 	void ReleaseCompiledShader();
 private:
 	std::shared_ptr<DeviceContext> m_pDeviceContext = nullptr;
-
 	Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIDevice> m_pDXGIDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIAdapter> m_pDXGIAdapter = nullptr;

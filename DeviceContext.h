@@ -1,12 +1,13 @@
 #pragma once
 #include "Prerequisites.h"
 #include "Renderer.h"
+#include "SwapChain.h"
 #include "Texture.h"
 class DeviceContext
 {
 public:
 	DeviceContext(ID3D11DeviceContext* deviceContext);
-	void ClearRenderTargetView(ID3D11RenderTargetView* renderTargetView, float red, float green, float blue, float alpha) const;
+	void ClearRenderTargetView(SwapChain* swapchain, float red, float green, float blue, float alpha) const;
 	void SetIndexBuffer(IndexBuffer* indexBuffer) const;
 	void SetVertexBuffer(VertexBuffer* vertexBuffer) const;
 	void SetVertexShader(VertexShader* vertexShader) const;

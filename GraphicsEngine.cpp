@@ -2,10 +2,6 @@
 
 GraphicsEngine::GraphicsEngine()
 {
-}
-
-void GraphicsEngine::Initialize()
-{
 	m_renderer = std::make_unique<Renderer>();
 	m_renderer->Initialize();
 	m_texture_manager = std::make_unique<TextureManager>();
@@ -15,13 +11,15 @@ void GraphicsEngine::Initialize()
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	m_renderer->CompileVertexShader(L"VetexMeshLayoutShader.hlsl", "main", &shader_byte_code, &size_shader);
-	memccpy(m_mesh_layout_byte_code, shader_byte_code, size_shader, sizeof(shader_byte_code));
+	m_mesh_layout_byte_code = new unsigned char[size_shader];
+	memcpy(m_mesh_layout_byte_code, shader_byte_code, size_shader);
 	m_mesh_layout_size = size_shader;
 	m_renderer->ReleaseCompiledShader();
 }
 
 void GraphicsEngine::Shutdown()
 {
+	delete[] m_mesh_layout_byte_code;
 }
 
 GraphicsEngine::~GraphicsEngine()
