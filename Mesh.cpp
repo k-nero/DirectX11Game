@@ -3,12 +3,21 @@
 Mesh::Mesh(const wchar_t* full_path) : Resource(full_path)
 {
 	LoadModelFromFile(full_path);
+
+	void* shader_byte_code = nullptr;
+	size_t shader_by_code_size = 0;
+	GraphicsEngine::Get()->GetVertexMeshLayoutShaderByteCodeAndSize(&shader_byte_code, &shader_by_code_size);
+	this->m_vertex_buffer = GraphicsEngine::Get()->GetRenderer()->CreateVertexBuffer();
+	this->m_vertex_buffer->Load(&this->m_vertices, sizeof(Vertex), this->m_vertices.size(), shader_byte_code, shader_by_code_size);
+	this->m_index_buffer = GraphicsEngine::Get()->GetRenderer()->CreateIndexBuffer();
+	this->m_index_buffer->Load(&this->m_indices, this->m_indices.size());
+
 }
 
 Mesh::~Mesh()
 {
 }
-
+	
 const VertexBuffer* Mesh::GetVertexBuffer() const
 {
 	return this->m_vertex_buffer.get();
@@ -36,7 +45,7 @@ void Mesh::LoadModelFromFile(const wchar_t* full_path, bool is_fliped)
 
 void Mesh::LoadNode(aiNode* node, const aiScene* scene)
 {
-for (unsigned int i = 0; i < node->mNumMeshes; ++i)
+	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
 		LoadMesh(scene->mMeshes[node->mMeshes[i]], scene);
 	}
@@ -53,7 +62,7 @@ void Mesh::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	DirectX::XMFLOAT2 uv;
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
-		vertex =  { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+		vertex = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 		if (mesh->mTextureCoords[0])
 		{
 			uv = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };

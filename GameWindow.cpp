@@ -13,6 +13,7 @@ void GameWindow::OnCreate()
 	g_pGraphics_engine->Initialize();
 
 	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\diamond.png");
+	m_mesh = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\teapot.obj");
 
 	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();
 	auto client = this->GetClient();

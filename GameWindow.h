@@ -12,6 +12,7 @@
 #include "InputSystem.h"
 #include "Camera.h"
 #include "DataStructure.h"
+#include "MeshManager.h"
 
 class GameWindow : public Window, public IInputListener
 {
@@ -43,6 +44,7 @@ private:
 	std::shared_ptr<ConstantBuffer> m_cb = nullptr;
 	std::shared_ptr<IndexBuffer> m_ib = nullptr;
 	std::shared_ptr<Texture> m_texture = nullptr;
+	std::shared_ptr<Mesh> m_mesh = nullptr;
 private:
 	float m_rot_x = 0.0f;
 	float m_rot_y = 0.0f;
