@@ -6,6 +6,7 @@
 #include "Resource.h"
 #include "DataStructure.h"
 
+
 class Mesh : public Resource
 {
 public:
@@ -17,7 +18,8 @@ private:
 	std::shared_ptr<VertexBuffer> m_vertex_buffer;
 	std::shared_ptr<IndexBuffer> m_index_buffer;
 private:
-	void LoadModelFromFile(const wchar_t* full_path, bool is_fliped = false);
+	void LoadModelFromFile(const wchar_t* full_path, bool is_fliped);
+	void LoadModelFromFile(const wchar_t* full_path);
 	void LoadNode(aiNode* node, const aiScene* scene);
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<Vertex> m_vertices;

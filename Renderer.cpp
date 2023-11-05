@@ -50,6 +50,7 @@ bool Renderer::Initialize()
 				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
 			}
 #endif
+			InitRasterizerState();
 			return true;
 		}
 	}
@@ -89,6 +90,18 @@ std::shared_ptr<VertexBuffer> Renderer::CreateVertexBuffer()
 std::shared_ptr<ConstantBuffer> Renderer::CreateConstantBuffer()
 {
 	return std::make_shared<ConstantBuffer>(this);
+}
+
+void Renderer::SetRasterizerState(bool is_front_culling)
+{
+	if (is_front_culling)
+	{
+		m_pDeviceContext->GetDeviceContext()->RSSetState(m_pRasterizerState_frontCulling.Get());
+	}
+	else
+	{
+		m_pDeviceContext->GetDeviceContext()->RSSetState(m_pRasterizerState_backCulling.Get());
+	}
 }
 
 std::shared_ptr<VertexShader> Renderer::CreateVertexShader(const void* shader_byte_code, size_t byte_code_size)
@@ -167,6 +180,19 @@ void Renderer::ReleaseCompiledShader()
 		m_blob->Release();
 		m_blob = nullptr;
 	}
+}
+
+void Renderer::InitRasterizerState()
+{
+	D3D11_RASTERIZER_DESC rasterizerDesc = {};
+	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
+	rasterizerDesc.FrontCounterClockwise = true;
+	rasterizerDesc.DepthClipEnable = true;
+	m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pRasterizerState_frontCulling);
+
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+	m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pRasterizerState_backCulling);
 }
 
 ID3D11InfoQueue* Renderer::GetInfoQueue() const

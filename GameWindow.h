@@ -19,6 +19,9 @@ class GameWindow : public Window, public IInputListener
 {
 public: 
 	GameWindow();
+	void DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture);
+	void UpdateSkyBoxAtt();
+	void UpdateModelAtt();
 	~GameWindow();
 
 	// Inherited via Window
@@ -42,10 +45,14 @@ private:
 	std::shared_ptr<VertexBuffer> m_vb = nullptr;
 	std::shared_ptr<VertexShader> m_vs = nullptr;
 	std::shared_ptr<PixelShader> m_ps = nullptr;
+	std::shared_ptr<PixelShader> m_sky_ps = nullptr;
 	std::shared_ptr<ConstantBuffer> m_cb = nullptr;
+	std::shared_ptr<ConstantBuffer> m_sky_cb = nullptr;
 	std::shared_ptr<IndexBuffer> m_ib = nullptr;
 	std::shared_ptr<Texture> m_texture = nullptr;
 	std::shared_ptr<Mesh> m_mesh = nullptr;
+	std::shared_ptr<Mesh> m_sky_box = nullptr;
+	std::shared_ptr<Texture> m_sky_tex = nullptr;
 private:
 	float m_rot_x = 0.0f;
 	float m_rot_y = 0.0f;
@@ -56,4 +63,8 @@ private:
 
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
 	bool m_play_state = true;
+
+    DirectX::XMMATRIX m_world_matrix;
+	DirectX::XMMATRIX m_view_matrix;
+	DirectX::XMMATRIX m_proj_matrix;
 };

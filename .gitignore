@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # obj
 !teapot.obj
+!statue.obj
+!sphere_hq.obj

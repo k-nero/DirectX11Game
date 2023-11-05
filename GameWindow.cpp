@@ -4,6 +4,49 @@ using namespace DirectX;
 
 GameWindow::GameWindow() = default;
 
+void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture)
+{
+	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
+	context->SetConstantBuffer(vertexShader, constantBuffer);
+	context->SetConstantBuffer(pixelShader, constantBuffer);
+
+	if (texture != nullptr)
+	{
+		context->SetTextureShaderResource(pixelShader, texture);
+		context->SetTextureShaderResource(vertexShader, texture);
+		context->SetSamplerState(pixelShader, texture);
+		context->SetSamplerState(vertexShader, texture);
+	}
+	
+	context->SetVertexShader(vertexShader);
+	context->SetPixelShader(pixelShader);
+	context->SetVertexBuffer(mesh->GetVertexBuffer());
+	context->SetIndexBuffer(mesh->GetIndexBuffer());
+	context->DrawIndexedTriangleList(mesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
+}
+
+void GameWindow::UpdateSkyBoxAtt()
+{
+	constant cb{};
+
+	cb.m_world = DirectX::XMMatrixScalingFromVector({ 1000.0f, 1000.0f, 1000.0f }) * DirectX::XMMatrixTranslationFromVector(g_pGraphics_engine->GetCamera()->GetCameraPosition()) ;
+	cb.m_view = m_view_matrix;
+	cb.m_projection = m_proj_matrix;
+
+	m_sky_cb->Update(GraphicsEngine::Get()->GetRenderer()->GetImmediateDeviceContext(), &cb);
+}
+
+void GameWindow::UpdateModelAtt()
+{
+	constant cb{};
+	cb.m_world = m_world_matrix;
+	cb.m_view = m_view_matrix;
+	cb.m_projection = m_proj_matrix;
+	cb.m_light_direction = { 0.0f, 0.0f, -1.0f, 0.0f };
+	DirectX::XMStoreFloat4(&cb.camera_position, g_pGraphics_engine->GetCamera()->GetCameraPosition());
+	m_cb->Update(GraphicsEngine::Get()->GetRenderer()->GetImmediateDeviceContext(), &cb);
+}
+
 void GameWindow::OnCreate()
 {
 	Window::OnCreate();
@@ -11,104 +54,34 @@ void GameWindow::OnCreate()
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
 	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\brick.png");
+	m_sky_tex = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\sky.jpg");
+
 	m_mesh = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\teapot.obj");
+	m_sky_box = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere_hq.obj");
 
 	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();
 	auto client = this->GetClient();
 	m_swap_chain->Initialize(this->m_hWnd, client.right - client.left, client.bottom - client.top, false);
 
-	//DirectX::XMFLOAT3 position_list[] =
-	//{
-	//	 DirectX::XMFLOAT3{-0.5f, -0.5f, -0.5f},
-	//	 DirectX::XMFLOAT3{-0.5f, 0.5f, -0.5f},
-	//	 DirectX::XMFLOAT3{0.5f, 0.5f, -0.5f},
-	//	 DirectX::XMFLOAT3{0.5f, -0.5f, -0.5f},
-
-	//	 DirectX::XMFLOAT3{0.5f, -0.5f, 0.5f},
-	//	 DirectX::XMFLOAT3{0.5f, 0.5f, 0.5f},
-	//	 DirectX::XMFLOAT3{-0.5f, 0.5f, 0.5f},
-	//	 DirectX::XMFLOAT3{-0.5f, -0.5f, 0.5f}
-	//};
-
-	//DirectX::XMFLOAT2 texcoord_list[] =
-	//{
-	//	DirectX::XMFLOAT2{0.0f, 0.0f},
-	//	DirectX::XMFLOAT2{0.0f, 1.0f},
-	//	DirectX::XMFLOAT2{1.0f, 0.0f},
-	//	DirectX::XMFLOAT2{1.0f, 1.0f},
-	//};
-
-	//Vertex list[] =
-	//{
-	//	{ position_list[0],texcoord_list[1] },
-	//	{ position_list[1],texcoord_list[0] },
-	//	{ position_list[2],texcoord_list[2] },
-	//	{ position_list[3],texcoord_list[3] },
-
-
-	//	{ position_list[4],texcoord_list[1] },
-	//	{ position_list[5],texcoord_list[0] },
-	//	{ position_list[6],texcoord_list[2] },
-	//	{ position_list[7],texcoord_list[3] },
-
-
-	//	{ position_list[1],texcoord_list[1] },
-	//	{ position_list[6],texcoord_list[0] },
-	//	{ position_list[5],texcoord_list[2] },
-	//	{ position_list[2],texcoord_list[3] },
-
-	//	{ position_list[7],texcoord_list[1] },
-	//	{ position_list[0],texcoord_list[0] },
-	//	{ position_list[3],texcoord_list[2] },
-	//	{ position_list[4],texcoord_list[3] },
-
-	//	{ position_list[3],texcoord_list[1] },
-	//	{ position_list[2],texcoord_list[0] },
-	//	{ position_list[5],texcoord_list[2] },
-	//	{ position_list[4],texcoord_list[3] },
-
-	//	{ position_list[7],texcoord_list[1] },
-	//	{ position_list[6],texcoord_list[0] },
-	//	{ position_list[1],texcoord_list[2] },
-	//	{ position_list[0],texcoord_list[3] }
-	//};
-
-	//unsigned int index_list[] =
-	//{
-	//	0,1,2, 
-	//	2,3,0, 
-	//	4,5,6,
-	//	6,7,4,
-	//	8,9,10,
-	//	10,11,8,
-	//	12,13,14,
-	//	14,15,12,
-	//	16,17,18,
-	//	18,19,16,
-	//	20,21,22,
-	//	22,23,20
-
-	//};
-	//unsigned int index_list_size = (sizeof(*RtlpNumberOf(index_list)));
-	//m_ib = g_pGraphics_engine->GetRenderer()->CreateIndexBuffer();
-	//m_ib->Load(index_list, index_list_size);
-
-	//m_vb = g_pGraphics_engine->GetRenderer()->CreateVertexBuffer();
-
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	g_pGraphics_engine->GetRenderer()->CompileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &size_shader);
 	m_vs = g_pGraphics_engine->GetRenderer()->CreateVertexShader(shader_byte_code, size_shader);
-	//m_vb->Load(list, sizeof(Vertex), (sizeof(*RtlpNumberOf(list))), shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
 	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &size_shader);
 	m_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
+	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"SkyboxPixelShader.hlsl", "main", &shader_byte_code, &size_shader);
+	m_sky_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
+	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
+
 	constant cbuffer = { };
 	m_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();
 	m_cb->Load(&cbuffer, sizeof(constant));
+	m_sky_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();
+	m_sky_cb->Load(&cbuffer, sizeof(constant));
 }
 
 void GameWindow::OnDestroy()
@@ -116,6 +89,8 @@ void GameWindow::OnDestroy()
 	Window::OnDestroy();
 	g_pGraphics_engine->Shutdown();
 }
+
+
 
 void GameWindow::OnUpdate()
 {
@@ -127,27 +102,17 @@ void GameWindow::OnUpdate()
 	context->ClearRenderTargetView(m_swap_chain.get(), 0.0f, 0.3f, 0.4f, 1.0f);
 	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
+	m_world_matrix = DirectX::XMMatrixIdentity();
+	m_view_matrix = g_pGraphics_engine->GetCamera()->GetViewMatrix();
+	m_proj_matrix = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
 
-	constant cbuffer{};
-	cbuffer.m_world = DirectX::XMMatrixIdentity();
-	cbuffer.m_view = g_pGraphics_engine->GetCamera()->GetViewMatrix();
-	cbuffer.m_projection = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
+	g_pGraphics_engine->GetRenderer()->SetRasterizerState(true);
+	UpdateModelAtt();
+	DrawMesh(m_mesh.get(), m_vs.get(), m_ps.get(), m_cb.get(), m_texture.get());
 
-	m_cb->Update(context, &cbuffer);
-
-	context->SetConstantBuffer(m_vs.get(), m_cb.get());
-	context->SetConstantBuffer(m_ps.get(), m_cb.get());
-
-	context->SetTextureShaderResource(m_ps.get(), m_texture.get());
-	context->SetTextureShaderResource(m_vs.get(), m_texture.get());
-	context->SetSamplerState(m_ps.get(), m_texture.get());
-	context->SetSamplerState(m_vs.get(), m_texture.get());
-
-	context->SetVertexShader(m_vs.get());
-	context->SetPixelShader(m_ps.get());
-	context->SetVertexBuffer(m_mesh->GetVertexBuffer());
-	context->SetIndexBuffer(m_mesh->GetIndexBuffer());
-	context->DrawIndexedTriangleList(m_mesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
+	g_pGraphics_engine->GetRenderer()->SetRasterizerState(false);
+	UpdateSkyBoxAtt();
+	DrawMesh(m_sky_box.get(), m_vs.get(), m_sky_ps.get(), m_sky_cb.get(), m_sky_tex.get());
 
 	m_swap_chain->Present(true);
 

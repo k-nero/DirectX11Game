@@ -4,7 +4,7 @@ Texture::Texture(const wchar_t* full_path) : Resource(full_path)
 {
 	DirectX::TexMetadata metadata;
 	DirectX::ScratchImage image;
-	HRESULT rs = DirectX::LoadFromWICFile(full_path, DirectX::WIC_FLAGS_NONE, &metadata, image);
+	HRESULT rs = DirectX::LoadFromWICFile(full_path, DirectX::WIC_FLAGS_IGNORE_SRGB, &metadata, image);
 	if ((HRESULT)rs < 0)
 	{
 		throw std::exception("Texture not found");

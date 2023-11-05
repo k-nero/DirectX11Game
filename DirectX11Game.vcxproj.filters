@@ -208,6 +208,9 @@
     <FxCompile Include="VetexMeshLayoutShader.hlsl">
       <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="SkyboxPixelShader.hlsl">
+      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assests\Textures\wood.jpg">
@@ -216,9 +219,21 @@
     <Image Include="Assets\Textures\diamond.png">
       <Filter>Game\Resource\Assest\Textures</Filter>
     </Image>
+    <Image Include="Assets\Textures\sky.jpg">
+      <Filter>Game\Resource\Assest\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\brick.png">
+      <Filter>Game\Resource\Assest\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Object Include="Assets\Meshes\teapot.obj">
+      <Filter>Game\Resource\Meshes</Filter>
+    </Object>
+    <Object Include="Assets\Meshes\statue.obj">
+      <Filter>Game\Resource\Meshes</Filter>
+    </Object>
+    <Object Include="Assets\Meshes\sphere_hq.obj">
       <Filter>Game\Resource\Meshes</Filter>
     </Object>
   </ItemGroup>

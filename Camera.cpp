@@ -89,4 +89,8 @@ DirectX::XMMATRIX Camera::GetViewMatrix()
 {
 	return DirectX::XMMatrixLookAtLH(m_camera_pos, DirectX::XMVectorAdd(m_camera_pos, m_camera_front), m_camera_up);
 }
+DirectX::XMVECTOR Camera::GetCameraPosition()
+{
+	return m_camera_pos;
+}
 // Path: GameWindow.cpp

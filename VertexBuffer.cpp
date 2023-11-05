@@ -5,7 +5,7 @@ VertexBuffer::VertexBuffer(Renderer* renderer) : m_renderer(renderer)
 
 }
 
-bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned int list_size, const void* shader_byte_code, size_t shader_byte_size)
+bool VertexBuffer::Load(void* list_vertices, unsigned int vertex_size, unsigned int list_size, const void* shader_byte_code, size_t shader_byte_size)
 {
 	if (m_layout)m_layout->Release();
 
@@ -23,7 +23,7 @@ bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned
 			return false;
 		}
 	}
-	
+
 	m_renderer->GetImmediateDeviceContext()->GetDeviceContext()->Map(m_buffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &buffer_data);
 	memcpy(buffer_data.pData, list_vertices, static_cast<size_t>(vertex_size) * list_size);
 	m_renderer->GetImmediateDeviceContext()->GetDeviceContext()->Unmap(m_buffer.Get(), NULL);
@@ -31,7 +31,8 @@ bool VertexBuffer::Load( void* list_vertices, unsigned int vertex_size, unsigned
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	unsigned size_layout = (sizeof(*RtlpNumberOf(layout)));
 

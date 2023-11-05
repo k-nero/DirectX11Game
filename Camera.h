@@ -15,6 +15,7 @@ public:
 	void MouseControl(float x, float y);
 	void UpdateViewMatrix();
 	DirectX::XMMATRIX GetViewMatrix();
+	DirectX::XMVECTOR GetCameraPosition();
 
 private:
 	DirectX::XMVECTOR m_camera_pos{};

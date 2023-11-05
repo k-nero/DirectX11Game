@@ -5,7 +5,7 @@ GraphicsEngine::GraphicsEngine()
 	m_renderer = std::make_unique<Renderer>();
 	m_renderer->Initialize();
 	m_texture_manager = std::make_unique<TextureManager>();
-	m_camera = std::make_unique<Camera>(Camera({ 0, 0, 2 }, { 0, 1, 0 }, -90.0f, 0.0f, 1.0f, 0.2f));
+	m_camera = std::make_unique<Camera>(Camera({ 0, 0, 2 }, { 0, 1, 0 }, -90.0f, 0.0f, 0.1f, 0.2f));
 	m_mesh_manager = std::make_unique<MeshManager>();
 
 	void* shader_byte_code = nullptr;
