@@ -96,15 +96,15 @@ void GameWindow::OnCreate()
 
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
-	g_pGraphics_engine->GetRenderer()->CompileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &size_shader);
+	g_pGraphics_engine->GetRenderer()->CompileVertexShader(L"VertexShader", "main", &shader_byte_code, &size_shader);
 	m_vs = g_pGraphics_engine->GetRenderer()->CreateVertexShader(shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
-	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &size_shader);
+	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"PixelShader", "main", &shader_byte_code, &size_shader);
 	m_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
-	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"SkyboxPixelShader.hlsl", "main", &shader_byte_code, &size_shader);
+	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"SkyboxPixelShader", "main", &shader_byte_code, &size_shader);
 	m_sky_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
 	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 

@@ -3,14 +3,13 @@
 GraphicsEngine::GraphicsEngine()
 {
 	m_renderer = std::make_unique<Renderer>();
-	m_renderer->Initialize();
 	m_texture_manager = std::make_unique<TextureManager>();
 	m_camera = std::make_unique<Camera>(Camera({ 0, 0, 2 }, WORLD_UP, -90.0f, 0.0f, CAMERA_SPEED, MOUSE_SENSITIVITY));
 	m_mesh_manager = std::make_unique<MeshManager>();
 
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
-	m_renderer->CompileVertexShader(L"VetexMeshLayoutShader.hlsl", "main", &shader_byte_code, &size_shader);
+	m_renderer->CompileVertexShader(L"VetexMeshLayoutShader", "main", &shader_byte_code, &size_shader);
 	m_mesh_layout_byte_code = new unsigned char[size_shader];
 	memcpy(m_mesh_layout_byte_code, shader_byte_code, size_shader);
 	m_mesh_layout_size = size_shader;

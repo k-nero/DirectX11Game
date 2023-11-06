@@ -7,7 +7,7 @@ class PixelShader
 public:
 	PixelShader(Renderer* renderer);
 	~PixelShader();
-	bool Initialize(const void* shader_byte_code, size_t byte_code_size);
+	HRESULT Initialize(const void* shader_byte_code, size_t byte_code_size);
 	void Release();
 public:
 	ID3D11PixelShader* GetShader();

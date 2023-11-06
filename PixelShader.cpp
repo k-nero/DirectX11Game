@@ -10,10 +10,14 @@ PixelShader::~PixelShader()
 
 }
 
-bool PixelShader::Initialize(const void* shader_byte_code, size_t byte_code_size)
+HRESULT PixelShader::Initialize(const void* shader_byte_code, size_t byte_code_size)
 {
     HRESULT hr = m_renderer->GetDevice()->CreatePixelShader(shader_byte_code, byte_code_size, nullptr, m_ps.ReleaseAndGetAddressOf());
-    return hr >= 0x0L ? true : false;
+    if (FAILED(hr))
+    {
+		throw std::exception("PixelShader not created successfully");
+	}
+    return hr;
 }
 
 void PixelShader::Release()

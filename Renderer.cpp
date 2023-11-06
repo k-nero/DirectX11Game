@@ -1,9 +1,7 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer() = default;
-
-bool Renderer::Initialize()
+Renderer::Renderer() 
 {
 	D3D_DRIVER_TYPE driverTypes[] = {
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -26,36 +24,51 @@ bool Renderer::Initialize()
 		const auto hr = D3D11CreateDevice(nullptr, m_driverType, nullptr, creationFlags, featureLevels, (sizeof(*RtlpNumberOf(featureLevels))), (0x7U), &m_pDevice, &m_featureLevel, &deviceContext);
 		if (hr >= 0x0L)
 		{
-			m_pDeviceContext = std::make_shared<DeviceContext>(deviceContext.Get());
-			m_pDevice->QueryInterface(__uuidof(IDXGIDevice), IID_PPV_ARGS_Helper(&m_pDXGIDevice));
-			m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), IID_PPV_ARGS_Helper(&m_pDXGIAdapter));
-			m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), IID_PPV_ARGS_Helper(&m_pDXGIFactory));
-#if defined(_DEBUG)
-
-			DXGI_ADAPTER_DESC desc;
-			m_pDXGIAdapter->GetDesc(&desc);
-			wchar_t buff[256] = {};
-			swprintf_s(buff, L"Direct3D Adapter: VID:%04X, PID:%04X - %ls\n", desc.VendorId, desc.DeviceId, desc.Description);
-			OutputDebugStringW(buff);
-
-			m_pDevice->QueryInterface(__uuidof(ID3D11Debug), IID_PPV_ARGS_Helper(&m_debug));
-			m_debug->SetFeatureMask(0x3U);
-			m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
-			m_debug->ValidateContext(deviceContext.Get());
-
-			if ((m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), IID_PPV_ARGS_Helper(&pInfoQueue))) >= 0x0L)
-			{
-				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-				pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
-			}
-#endif
-			InitRasterizerState();
-			return true;
+			break;
 		}
 	}
-	return false;
+
+	m_pDeviceContext = std::make_shared<DeviceContext>(deviceContext.Get());
+	m_pDevice->QueryInterface(__uuidof(IDXGIDevice), IID_PPV_ARGS_Helper(&m_pDXGIDevice));
+	m_pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), IID_PPV_ARGS_Helper(&m_pDXGIAdapter));
+	m_pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), IID_PPV_ARGS_Helper(&m_pDXGIFactory));
+#if defined(_DEBUG)
+
+	DXGI_ADAPTER_DESC desc;
+	m_pDXGIAdapter->GetDesc(&desc);
+	wchar_t buff[256] = {};
+	swprintf_s(buff, L"Direct3D Adapter: VID:%04X, PID:%04X - %ls\n", desc.VendorId, desc.DeviceId, desc.Description);
+	OutputDebugStringW(buff);
+
+	m_pDevice->QueryInterface(__uuidof(ID3D11Debug), IID_PPV_ARGS_Helper(&m_debug));
+	m_debug->SetFeatureMask(0x3U);
+	m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
+	m_debug->ValidateContext(deviceContext.Get());
+
+	if ((m_debug->QueryInterface(__uuidof(ID3D11InfoQueue), IID_PPV_ARGS_Helper(&pInfoQueue))) >= 0x0L)
+	{
+		pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+		pInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+	}
+#endif
+	InitRasterizerState();
 }
 
+/// <summary>
+/// Deprecated
+/// Use Renderer::Renderer() instead
+/// </summary>
+/// <returns></returns>
+bool Renderer::Initialize()
+{
+	//Renderer::Renderer();
+	return true;
+}
+
+/// <summary>
+/// Deprecated
+/// Use Smart Pointer instead
+/// </summary>
 void Renderer::Shutdown()
 {
 	//Renderer::~Renderer();
@@ -116,10 +129,7 @@ std::shared_ptr<VertexShader> Renderer::CreateVertexShader(const void* shader_by
 std::shared_ptr<PixelShader> Renderer::CreatePixelShader(const void* shader_byte_code, size_t byte_code_size)
 {
 	auto ps = std::make_shared<PixelShader>(this);
-	if (!ps->Initialize(shader_byte_code, byte_code_size))
-	{
-		return nullptr;
-	}
+	auto hr = ps->Initialize(shader_byte_code, byte_code_size);
 	return ps;
 }
 
@@ -131,20 +141,44 @@ bool Renderer::CompilePixelShader(const wchar_t* file_name, const char* entry_po
 	flag |= D3DCOMPILE_DEBUG;
 #endif
 
-	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "ps_5_0", flag, NULL, &m_blob, &error_blob);
-	if (FAILED(hr) || error_blob)
+	std::wstring cso_file_name(file_name);
+	cso_file_name += L".cso";
+
+	//auto blob = DX::ReadData(cso_file_name.c_str());
+	//*shader_byte_code = new unsigned char[blob.size()];
+	//memcpy(*shader_byte_code, blob.data(), blob.size());
+	//*byte_code_size = blob.size();
+	//return true;
+
+	if (!std::filesystem::exists(cso_file_name))
 	{
-		if (error_blob)
+		wchar_t buff[MAX_PATH] = {};
+		GetModuleFileNameW(0, buff, (sizeof(*RtlpNumberOf(buff))));
+		std::wstring path_to_exe(buff);
+		path_to_exe = path_to_exe.substr(0, path_to_exe.find_last_of(L"\\") + 1);
+		cso_file_name = path_to_exe + cso_file_name;
+	}
+	HRESULT hr = D3DReadFileToBlob(cso_file_name.c_str(), &m_blob);
+
+	if (FAILED(hr))
+	{
+		std::wstring hlsl_file_name(file_name);
+		hlsl_file_name += L".hlsl";
+		HRESULT rs = D3DCompileFromFile(hlsl_file_name.c_str(), nullptr, nullptr, entry_point_name, "ps_5_0", flag, NULL, &m_blob, &error_blob);
+		if (FAILED(rs) || error_blob)
 		{
-			const std::string errorMessage = (char*)error_blob->GetBufferPointer();
-			OutputDebugStringA(errorMessage.c_str());
+			if (error_blob)
+			{
+				const std::string errorMessage = (char*)error_blob->GetBufferPointer();
+				OutputDebugStringA(errorMessage.c_str());
+			}
+			throw std::exception("PixelShader not created successfully");
 			return false;
 		}
-		return false;
 	}
 	*shader_byte_code = m_blob->GetBufferPointer();
 	*byte_code_size = m_blob->GetBufferSize();
-	return false;
+	return true;
 }
 
 bool Renderer::CompileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
@@ -154,21 +188,45 @@ bool Renderer::CompileVertexShader(const wchar_t* file_name, const char* entry_p
 #if defined (_DEBUG)
 	flag |= D3DCOMPILE_DEBUG;
 #endif
-	HRESULT hr = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point_name, "vs_5_0", flag, NULL, &m_blob, &error_blob);
-	if (FAILED(hr) || error_blob)
+
+	std::wstring cso_file_name(file_name);
+	cso_file_name += L".cso";
+
+	//auto blob = DX::ReadData(cso_file_name.c_str());
+	//*shader_byte_code = new unsigned char[blob.size()];
+	//memcpy(*shader_byte_code, blob.data(), blob.size());
+	//*byte_code_size = blob.size();
+	//return true;
+
+	if (!std::filesystem::exists(cso_file_name))
 	{
-		if (error_blob)
-		{
-			const std::string errorMessage = (char*)error_blob->GetBufferPointer();
-			OutputDebugStringA(errorMessage.c_str());
-			return false;
-		}
-		return false;
+		wchar_t buff[MAX_PATH] = {};
+		GetModuleFileNameW(0, buff, (sizeof(*RtlpNumberOf(buff))));
+		std::wstring path_to_exe(buff);
+		path_to_exe = path_to_exe.substr(0, path_to_exe.find_last_of(L"\\") + 1);
+		cso_file_name = path_to_exe + cso_file_name;
 	}
 
+	HRESULT hr = D3DReadFileToBlob(cso_file_name.c_str(), &m_blob);
+
+	if (FAILED(hr))
+	{
+		std::wstring hlsl_file_name(file_name);
+		hlsl_file_name += L".hlsl";
+		HRESULT rs = D3DCompileFromFile(hlsl_file_name.c_str(), nullptr, nullptr, entry_point_name, "vs_5_0", flag, NULL, &m_blob, &error_blob);
+		if (FAILED(rs) || error_blob)
+		{
+			if (error_blob)
+			{
+				const std::string errorMessage = (char*)error_blob->GetBufferPointer();
+				OutputDebugStringA(errorMessage.c_str());
+			}
+			throw std::exception("VertexShader not created successfully");
+			return false;
+		}
+	}
 	*shader_byte_code = m_blob->GetBufferPointer();
 	*byte_code_size = m_blob->GetBufferSize();
-
 	return true;
 }
 

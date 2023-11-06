@@ -13,6 +13,7 @@
 #include "ConstantBuffer.h"
 #include "IndexBuffer.h"
 #include "Prerequisites.h"
+#include "ReadCSO.h"
 
 class Renderer
 {
