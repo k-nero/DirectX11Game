@@ -10,7 +10,7 @@ public:
 	~VertexShader();
 	bool Initialize(const void* shader_byte_code, size_t byte_code_size);
 public: 
-	ID3D11VertexShader* GetShader() const;
+	ID3D11VertexShader* GetShader();
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vs = nullptr;
 	Renderer* m_renderer = nullptr;

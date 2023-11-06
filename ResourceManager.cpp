@@ -23,6 +23,5 @@ std::shared_ptr<Resource> ResourceManager::CreateResourceFromFile(const wchar_t*
 		m_resource_map[full_path] = std::shared_ptr<Resource>(resource);
 		return m_resource_map[full_path];
 	}
-	delete[] file_path;
 	return nullptr;
 }

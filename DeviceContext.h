@@ -10,8 +10,8 @@ public:
 	void ClearRenderTargetView(SwapChain* swapchain, float red, float green, float blue, float alpha) const;
 	void SetIndexBuffer(IndexBuffer* indexBuffer) const;
 	void SetVertexBuffer(VertexBuffer* vertexBuffer) const;
-	void SetVertexShader(VertexShader* vertexShader) const;
-	void SetPixelShader(PixelShader* pixelShader) const;
+	void SetVertexShaders(VertexShader* vertexShader) const;
+	void SetPixelShaders(PixelShader* pixelShader) const;
 	void DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex) const;
 	void DrawIndexedTriangleList(unsigned indexCount, unsigned startIndexLocation, unsigned startVertexLocation) const;
 	void DrawTriangleStrip(unsigned vertexCount, unsigned startVertexIndex) const;

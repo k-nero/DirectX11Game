@@ -176,7 +176,7 @@ void Renderer::ReleaseCompiledShader()
 {
 	if (m_blob)
 	{
-		m_blob->Release();
+		m_blob.Reset();
 		m_blob = nullptr;
 	}
 }

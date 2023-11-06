@@ -4,6 +4,29 @@ using namespace DirectX;
 
 GameWindow::GameWindow() = default;
 
+
+
+void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture)
+{
+	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
+	context->SetConstantBuffer(vertexShader, constantBuffer);
+	context->SetConstantBuffer(pixelShader, constantBuffer);
+
+	if (texture != nullptr)
+	{
+		context->SetTextureShaderResource(pixelShader, texture);
+		context->SetTextureShaderResource(vertexShader, texture);
+		context->SetSamplerState(pixelShader, texture);
+		context->SetSamplerState(vertexShader, texture);
+	}
+	
+	context->SetVertexShaders(vertexShader);
+	context->SetPixelShaders(pixelShader);
+	context->SetVertexBuffer(mesh->GetVertexBuffer());
+	context->SetIndexBuffer(mesh->GetIndexBuffer());
+	context->DrawIndexedTriangleList(mesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
+}
+
 void GameWindow::Render()
 {
 	RECT rc = this->GetClient();
@@ -29,27 +52,6 @@ void GameWindow::Render()
 	m_old_time = m_new_time;
 	m_new_time = GetTickCount64();
 	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
-}
-
-void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture)
-{
-	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
-	context->SetConstantBuffer(vertexShader, constantBuffer);
-	context->SetConstantBuffer(pixelShader, constantBuffer);
-
-	if (texture != nullptr)
-	{
-		context->SetTextureShaderResource(pixelShader, texture);
-		context->SetTextureShaderResource(vertexShader, texture);
-		context->SetSamplerState(pixelShader, texture);
-		context->SetSamplerState(vertexShader, texture);
-	}
-	
-	context->SetVertexShader(vertexShader);
-	context->SetPixelShader(pixelShader);
-	context->SetVertexBuffer(mesh->GetVertexBuffer());
-	context->SetIndexBuffer(mesh->GetIndexBuffer());
-	context->DrawIndexedTriangleList(mesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 }
 
 void GameWindow::UpdateSkyBoxAtt()

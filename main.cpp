@@ -18,7 +18,7 @@ int reportHook(int reportType, char* userMessage, int* ) {
 #endif // DEBUG
 
 
-int __stdcall WinMain(_In_ HINSTANCE , _In_opt_ HINSTANCE , _In_ PSTR , _In_ int )
+int WINAPI WinMain(_In_ HINSTANCE , _In_opt_ HINSTANCE , _In_ PSTR , _In_ int )
 {
 
 #if defined(_DEBUG)

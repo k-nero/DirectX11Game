@@ -29,14 +29,16 @@ void DeviceContext::SetVertexBuffer(VertexBuffer* vertexBuffer) const
 	m_deviceContext->IASetInputLayout(layout);
 }
 
-void DeviceContext::SetVertexShader(VertexShader* vertexShader) const
+void DeviceContext::SetVertexShaders(VertexShader* vertexShader) const
 {
-	m_deviceContext->VSSetShader(vertexShader->GetShader(), nullptr, 0);
+	auto shader = vertexShader->GetShader();
+	m_deviceContext->VSSetShader(shader, nullptr, 0);
 }
 
-void DeviceContext::SetPixelShader(PixelShader* pixelShader) const
+void DeviceContext::SetPixelShaders(PixelShader* pixelShader) const
 {
-	m_deviceContext->PSSetShader(pixelShader->GetShader(), nullptr, 0);
+	auto shader = pixelShader->GetShader();
+	m_deviceContext->PSSetShader(shader, nullptr, 0);
 }
 
 void DeviceContext::DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex) const
@@ -71,7 +73,6 @@ void DeviceContext::SetViewportSize(unsigned width, unsigned height) const
 
 void DeviceContext::SetConstantBuffer(VertexShader* vertexShader, ConstantBuffer* buffer) const
 {
-	vertexShader;
 	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
 	m_deviceContext->VSSetConstantBuffers(0, 1, &bufferPtr);
 }

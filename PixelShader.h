@@ -10,8 +10,8 @@ public:
 	bool Initialize(const void* shader_byte_code, size_t byte_code_size);
 	void Release();
 public:
-	ID3D11PixelShader* GetShader() const;
-private:
+	ID3D11PixelShader* GetShader();
+public:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps = nullptr;
 	Renderer* m_renderer = nullptr;
 };
