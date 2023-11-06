@@ -132,6 +132,12 @@
     <ClCompile Include="DataStructure.h">
       <Filter>Engine\Graphic\Render Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Constant.h">
+      <Filter>Engine\Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadCSO.h">
+      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

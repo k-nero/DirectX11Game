@@ -73,7 +73,7 @@ void SwapChain::ReloadBuffers(unsigned int width, unsigned int height)
 
 	}
 
-	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	D3D11_TEXTURE2D_DESC depthStencilDesc{};
 	depthStencilDesc.Width = width;
 	depthStencilDesc.Height = height;
 	depthStencilDesc.MipLevels = 0x1U;
