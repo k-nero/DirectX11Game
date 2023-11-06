@@ -12,7 +12,7 @@ void VertexShader::Release()
 
 bool VertexShader::Initialize(const void* shader_byte_code, size_t byte_code_size)
 {
-	auto hr = m_renderer->GetDevice()->CreateVertexShader(shader_byte_code, byte_code_size, nullptr, m_vs.ReleaseAndGetAddressOf());
+	auto hr = m_renderer->GetDevice()->CreateVertexShader(shader_byte_code, byte_code_size, nullptr, &m_vs);
     return hr >= 0x0L ? true : false;
 }
 

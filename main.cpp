@@ -4,10 +4,10 @@
 #endif
 
 #include "GameWindow.h"
-#include <iostream>
 
 
 #ifdef _DEBUG
+#include <iostream>
 int reportHook(int reportType, char* userMessage, int* ) {
 	if (reportType == _CRT_ASSERT) {
 		std::cout << userMessage << std::endl;
@@ -16,7 +16,6 @@ int reportHook(int reportType, char* userMessage, int* ) {
 	return FALSE;
 }
 #endif // DEBUG
-
 
 int WINAPI WinMain(_In_ HINSTANCE , _In_opt_ HINSTANCE , _In_ PSTR , _In_ int )
 {
@@ -46,6 +45,5 @@ int WINAPI WinMain(_In_ HINSTANCE , _In_opt_ HINSTANCE , _In_ PSTR , _In_ int )
 #if defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif
-	return 0;
 }
 

@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "MeshManager.h"
 #include "Prerequisites.h"
+#include "Constant.h"
 
 class GraphicsEngine
 {

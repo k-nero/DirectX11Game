@@ -12,7 +12,7 @@ public:
 public: 
 	ID3D11VertexShader* GetShader();
 private:
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vs = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vs;
 	Renderer* m_renderer = nullptr;
 };
 

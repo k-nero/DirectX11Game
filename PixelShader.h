@@ -12,7 +12,7 @@ public:
 public:
 	ID3D11PixelShader* GetShader();
 public:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps;
 	Renderer* m_renderer = nullptr;
 };
 

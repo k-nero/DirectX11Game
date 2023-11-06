@@ -37,7 +37,7 @@ void GameWindow::Render()
 
 	m_world_matrix = DirectX::XMMatrixIdentity();
 	m_view_matrix = g_pGraphics_engine->GetCamera()->GetViewMatrix();
-	m_proj_matrix = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
+	m_proj_matrix = DirectX::XMMatrixPerspectiveFovLH(FOV, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), MIN_RENDER_DISTANCE, MAX_RENDER_DISTANCE);
 
 	g_pGraphics_engine->GetRenderer()->SetRasterizerState(true);
 	UpdateModelAtt();
@@ -58,7 +58,7 @@ void GameWindow::UpdateSkyBoxAtt()
 {
 	constant cb{};
 
-	cb.m_world = DirectX::XMMatrixScalingFromVector({ 1000.0f, 1000.0f, 1000.0f }) * DirectX::XMMatrixTranslationFromVector(g_pGraphics_engine->GetCamera()->GetCameraPosition()) ;
+	cb.m_world = DirectX::XMMatrixScalingFromVector({ MAX_RENDER_DISTANCE, MAX_RENDER_DISTANCE, MAX_RENDER_DISTANCE }) * DirectX::XMMatrixTranslationFromVector(g_pGraphics_engine->GetCamera()->GetCameraPosition()) ;
 	cb.m_view = m_view_matrix;
 	cb.m_projection = m_proj_matrix;
 
@@ -112,7 +112,7 @@ void GameWindow::OnCreate()
 	m_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();
 	m_cb->Load(&cbuffer, sizeof(constant));
 	m_sky_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();
-	m_sky_cb->Load(&cbuffer, sizeof(constant));
+	m_sky_cb->Load(&cbuffer, sizeof(constant)); 
 }
 
 void GameWindow::OnDestroy()

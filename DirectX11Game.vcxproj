@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Constant.h" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DataStructure.h" />
     <ClCompile Include="DeviceContext.cpp" />
