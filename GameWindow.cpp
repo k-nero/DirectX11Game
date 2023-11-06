@@ -28,7 +28,6 @@ void GameWindow::Render()
 
 	m_old_time = m_new_time;
 	m_new_time = GetTickCount64();
-
 	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
 }
 
@@ -80,6 +79,7 @@ void GameWindow::OnCreate()
 	Window::OnCreate();
 	InputSystem::Get()->AddListener(this);
 	InputSystem::Get()->ShowCursor(false);
+	InputSystem::Get()->ShowCursor(!m_play_state);
 	g_pGraphics_engine = GraphicsEngine::Get();
 
 	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\brick.png");
@@ -142,7 +142,11 @@ void GameWindow::OnUnFocus()
 void GameWindow::OnResize()
 {
 	RECT rc = this->GetClient();
-	m_swap_chain->Resize(rc.right - rc.left, rc.bottom - rc.top);
+	if (rc.right <= 0 || rc.bottom <= 0)
+	{
+		return;
+	}
+	m_swap_chain->Resize(rc.right, rc.bottom);
 	Render();
 }
 

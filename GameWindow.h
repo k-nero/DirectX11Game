@@ -64,7 +64,7 @@ private:
 	float m_delta_time = 0.0f;
 
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
-	bool m_play_state = true;
+	bool m_play_state = false;
 	bool m_fullscreen_state = false;
 
 
