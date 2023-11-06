@@ -15,6 +15,8 @@ public:
 	virtual void OnUpdate();
 	virtual void OnFocus();
 	virtual void OnUnFocus();
+	virtual void OnResize();
+	virtual RECT GetPhysicalScreensize();
 	~Window();
 protected:
 	HWND m_hWnd{};

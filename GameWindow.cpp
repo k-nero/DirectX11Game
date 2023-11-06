@@ -4,6 +4,34 @@ using namespace DirectX;
 
 GameWindow::GameWindow() = default;
 
+void GameWindow::Render()
+{
+	RECT rc = this->GetClient();
+	g_pGraphics_engine->GetCamera()->UpdateViewMatrix();
+	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
+	context->ClearRenderTargetView(m_swap_chain.get(), 0.0f, 0.3f, 0.4f, 1.0f);
+	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
+
+	m_world_matrix = DirectX::XMMatrixIdentity();
+	m_view_matrix = g_pGraphics_engine->GetCamera()->GetViewMatrix();
+	m_proj_matrix = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
+
+	g_pGraphics_engine->GetRenderer()->SetRasterizerState(true);
+	UpdateModelAtt();
+	DrawMesh(m_mesh.get(), m_vs.get(), m_ps.get(), m_cb.get(), m_texture.get());
+
+	g_pGraphics_engine->GetRenderer()->SetRasterizerState(false);
+	UpdateSkyBoxAtt();
+	DrawMesh(m_sky_box.get(), m_vs.get(), m_sky_ps.get(), m_sky_cb.get(), m_sky_tex.get());
+
+	m_swap_chain->Present(true);
+
+	m_old_time = m_new_time;
+	m_new_time = GetTickCount64();
+
+	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
+}
+
 void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture)
 {
 	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
@@ -53,6 +81,7 @@ void GameWindow::OnCreate()
 	InputSystem::Get()->AddListener(this);
 	InputSystem::Get()->ShowCursor(false);
 	g_pGraphics_engine = GraphicsEngine::Get();
+
 	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\brick.png");
 	m_sky_tex = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\sky.jpg");
 
@@ -86,6 +115,7 @@ void GameWindow::OnCreate()
 
 void GameWindow::OnDestroy()
 {
+	//m_swap_chain->SetFullScreen(false, 1280, 720);
 	Window::OnDestroy();
 	g_pGraphics_engine->Shutdown();
 }
@@ -95,31 +125,8 @@ void GameWindow::OnDestroy()
 void GameWindow::OnUpdate()
 {
 	Window::OnUpdate();
-	RECT rc = this->GetClient();
 	InputSystem::Get()->Update();
-	g_pGraphics_engine->GetCamera()->UpdateViewMatrix();
-	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
-	context->ClearRenderTargetView(m_swap_chain.get(), 0.0f, 0.3f, 0.4f, 1.0f);
-	context->SetViewportSize(rc.right - rc.left, rc.bottom - rc.top);
-
-	m_world_matrix = DirectX::XMMatrixIdentity();
-	m_view_matrix = g_pGraphics_engine->GetCamera()->GetViewMatrix();
-	m_proj_matrix = DirectX::XMMatrixPerspectiveFovLH(1.57f, ((float)(rc.right - rc.left) / (float)(rc.bottom - rc.top)), 0.1f, 1000.0f);
-
-	g_pGraphics_engine->GetRenderer()->SetRasterizerState(true);
-	UpdateModelAtt();
-	DrawMesh(m_mesh.get(), m_vs.get(), m_ps.get(), m_cb.get(), m_texture.get());
-
-	g_pGraphics_engine->GetRenderer()->SetRasterizerState(false);
-	UpdateSkyBoxAtt();
-	DrawMesh(m_sky_box.get(), m_vs.get(), m_sky_ps.get(), m_sky_cb.get(), m_sky_tex.get());
-
-	m_swap_chain->Present(true);
-
-	m_old_time = m_new_time;
-	m_new_time = GetTickCount64();
-
-	m_delta_time = (m_old_time) ? ((m_new_time - m_old_time) / 100.0f) : 0;
+	Render();
 }
 
 void GameWindow::OnFocus()
@@ -132,6 +139,13 @@ void GameWindow::OnUnFocus()
 	InputSystem::Get()->RemoveListener(this);
 }
 
+void GameWindow::OnResize()
+{
+	RECT rc = this->GetClient();
+	m_swap_chain->Resize(rc.right - rc.left, rc.bottom - rc.top);
+	Render();
+}
+
 void GameWindow::OnKeyDown(int key)
 {
 	g_pGraphics_engine->GetCamera()->KeyControl(key, m_delta_time);
@@ -139,6 +153,12 @@ void GameWindow::OnKeyDown(int key)
 	{
 		this->m_play_state = !this->m_play_state;
 		InputSystem::Get()->ShowCursor(!this->m_play_state);
+	}
+	if (key == VK_F11)
+	{
+		m_fullscreen_state = !m_fullscreen_state;
+		RECT rc = this->GetPhysicalScreensize();
+		m_swap_chain->SetFullScreen(rc.right, rc.bottom, m_fullscreen_state);
 	}
 }
 

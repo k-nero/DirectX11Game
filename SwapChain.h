@@ -10,7 +10,14 @@ public:
 	void Present(bool vsync);
 	ID3D11RenderTargetView* GetRenderTargetView() const;
 	ID3D11DepthStencilView* GetDepthStencilView() const;
+	/// <summary>
+	/// Derecated 
+	/// Use ComPtr instead
+	/// </summary>
 	void Release();
+	void ReloadBuffers(unsigned int width, unsigned int height);
+	void Resize(unsigned int width, unsigned int height);
+	void SetFullScreen(unsigned int width, unsigned int height, bool fullscreen);
 	~SwapChain();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain = nullptr;

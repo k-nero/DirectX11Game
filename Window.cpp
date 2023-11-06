@@ -11,26 +11,54 @@ __int64 _stdcall WndProc(HWND hWnd, unsigned int  message, unsigned __int64 wPar
 			Window* window = (Window*)((LPCREATESTRUCTW)lParam)->lpCreateParams;
 			SetWindowLongPtrW(hWnd, (-21), (__int64)window);
 			window->SetHWND(hWnd);
-			window->OnCreate();
+			if (window)
+			{
+				window->OnCreate();
+			}
 			break;
 		}
 		case WM_DESTROY:
 		{
 			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
-			window->OnDestroy();
+			if (window)
+			{
+				window->OnDestroy();
+			}
 			PostQuitMessage(0);
 			break;
 		}
 		case WM_SETFOCUS:
 		{
 			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
-			window->OnFocus();
+			if (window)
+			{
+				window->OnFocus();
+			}
 			break;
 		}
 		case WM_KILLFOCUS:
 		{
 			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
-			window->OnUnFocus();
+			if (window)
+			{
+				window->OnUnFocus();
+			}
+			break;
+		}
+		case WM_SIZE:
+		{
+			Window* window = (Window*)GetWindowLongPtrW(hWnd, -21);
+			if (window)
+			{
+				window->OnResize();
+			}
+			break;
+		}
+		case WM_GETMINMAXINFO:
+		{
+			LPMINMAXINFO minmax = (LPMINMAXINFO)lParam;
+			minmax->ptMinTrackSize.x = 800;
+			minmax->ptMinTrackSize.y = 600;
 			break;
 		}
 	}
@@ -58,7 +86,7 @@ bool Window::Initialize()
 		return false;
 	}
 
-	m_hWnd = CreateWindowExW((0x00000300L), L"CXWindow", L"DirectX 11 Game", (0x00CBF2EDL), ((int)0x80000000), ((int)0x80000000), 1280, 720, 0, 0, 0, this);
+	m_hWnd = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW, L"CXWindow", L"DirectX 11 Game", WS_OVERLAPPEDWINDOW , ((int)0x80000000), ((int)0x80000000), 1280, 720, 0, 0, 0, this);
 
 	if (m_hWnd == 0)
 	{
@@ -130,6 +158,18 @@ void Window::OnFocus()
 
 void Window::OnUnFocus()
 {
+}
+
+void Window::OnResize()
+{
+}
+
+RECT Window::GetPhysicalScreensize()
+{
+	RECT rc{};
+	rc.right = GetSystemMetrics(SM_CXSCREEN);
+	rc.bottom = GetSystemMetrics(SM_CYSCREEN);
+	return rc;
 }
 
 Window::~Window() = default;

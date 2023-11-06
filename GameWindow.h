@@ -19,6 +19,7 @@ class GameWindow : public Window, public IInputListener
 {
 public: 
 	GameWindow();
+	void Render();
 	void DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture);
 	void UpdateSkyBoxAtt();
 	void UpdateModelAtt();
@@ -30,6 +31,7 @@ public:
 	void OnUpdate() override;
 	void OnFocus() override;
 	void OnUnFocus() override;
+	void OnResize() override;
 	// Inherited via IInputListener
 	void OnKeyDown(int key) override;
 	void OnKeyUp(int key) override;
@@ -63,6 +65,8 @@ private:
 
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
 	bool m_play_state = true;
+	bool m_fullscreen_state = false;
+
 
     DirectX::XMMATRIX m_world_matrix;
 	DirectX::XMMATRIX m_view_matrix;
