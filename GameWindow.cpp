@@ -9,6 +9,7 @@ GameWindow::GameWindow() = default;
 void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture)
 {
 	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
+
 	context->SetConstantBuffer(vertexShader, constantBuffer);
 	context->SetConstantBuffer(pixelShader, constantBuffer);
 
@@ -22,8 +23,10 @@ void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader
 	
 	context->SetVertexShaders(vertexShader);
 	context->SetPixelShaders(pixelShader);
+
 	context->SetVertexBuffer(mesh->GetVertexBuffer());
 	context->SetIndexBuffer(mesh->GetIndexBuffer());
+
 	context->DrawIndexedTriangleList(mesh->GetIndexBuffer()->GetIndexListSize(), 0, 0);
 }
 
@@ -98,15 +101,12 @@ void GameWindow::OnCreate()
 	size_t size_shader = 0;
 	g_pGraphics_engine->GetRenderer()->CompileVertexShader(L"VertexShader", "main", &shader_byte_code, &size_shader);
 	m_vs = g_pGraphics_engine->GetRenderer()->CreateVertexShader(shader_byte_code, size_shader);
-	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
 	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"PixelShader", "main", &shader_byte_code, &size_shader);
 	m_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
-	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
 	g_pGraphics_engine->GetRenderer()->CompilePixelShader(L"SkyboxPixelShader", "main", &shader_byte_code, &size_shader);
 	m_sky_ps = g_pGraphics_engine->GetRenderer()->CreatePixelShader(shader_byte_code, size_shader);
-	g_pGraphics_engine->GetRenderer()->ReleaseCompiledShader();
 
 	constant cbuffer = { };
 	m_cb = g_pGraphics_engine->GetRenderer()->CreateConstantBuffer();

@@ -41,6 +41,24 @@ void DeviceContext::SetPixelShaders(PixelShader* pixelShader) const
 	m_deviceContext->PSSetShader(shader, nullptr, 0);
 }
 
+void DeviceContext::SetGeometryShaders(GeometryShader* geometryShader) const
+{
+	auto shader = geometryShader->GetShader();
+	m_deviceContext->GSSetShader(shader, nullptr, 0);
+}
+
+void DeviceContext::SetHullShaders(HullShader* hullShader) const
+{
+	auto shader = hullShader->GetShader();
+	m_deviceContext->HSSetShader(shader, nullptr, 0);
+}
+
+void DeviceContext::SetDomainShaders(DomainShader* domainShader) const
+{
+	auto shader = domainShader->GetShader();
+	m_deviceContext->DSSetShader(shader, nullptr, 0);
+}
+
 void DeviceContext::DrawTriangleList(unsigned vertexCount, unsigned startVertexIndex) const
 {
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -83,6 +101,24 @@ void DeviceContext::SetConstantBuffer(PixelShader* pixelShader, ConstantBuffer* 
 	m_deviceContext->PSSetConstantBuffers(0, 1, &bufferPtr);
 }
 
+void DeviceContext::SetConstantBuffer(GeometryShader* geometryShader, ConstantBuffer* buffer) const
+{
+	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
+	m_deviceContext->GSSetConstantBuffers(0, 1, &bufferPtr);
+}
+
+void DeviceContext::SetConstantBuffer(HullShader* hullShader, ConstantBuffer* buffer) const
+{
+	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
+	m_deviceContext->HSSetConstantBuffers(0, 1, &bufferPtr);
+}
+
+void DeviceContext::SetConstantBuffer(DomainShader* domainShader, ConstantBuffer* buffer) const
+{
+	ID3D11Buffer* bufferPtr = buffer->GetBuffer();
+	m_deviceContext->DSSetConstantBuffers(0, 1, &bufferPtr);
+}
+
 void DeviceContext::SetTextureShaderResource(VertexShader* vertexShader, Texture* texture) const
 {
 	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
@@ -95,6 +131,24 @@ void DeviceContext::SetTextureShaderResource(PixelShader* pixelShader, Texture* 
 	m_deviceContext->PSSetShaderResources(0, 1, &resourceView);
 }
 
+void DeviceContext::SetTextureShaderResource(GeometryShader* geometryShader, Texture* texture) const
+{
+	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
+	m_deviceContext->GSSetShaderResources(0, 1, &resourceView);
+}
+
+void DeviceContext::SetTextureShaderResource(HullShader* hullShader, Texture* texture) const
+{
+	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
+	m_deviceContext->HSSetShaderResources(0, 1, &resourceView);
+}
+
+void DeviceContext::SetTextureShaderResource(DomainShader* domainShader, Texture* texture) const
+{
+	ID3D11ShaderResourceView* resourceView = texture->GetTextureResourceView();
+	m_deviceContext->DSSetShaderResources(0, 1, &resourceView);
+}
+
 void DeviceContext::SetSamplerState(VertexShader* vertexShader, Texture* texture) const
 {
 	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
@@ -105,6 +159,24 @@ void DeviceContext::SetSamplerState(PixelShader* pixelShader, Texture* texture) 
 {
 	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
 	m_deviceContext->PSSetSamplers(0, 1, &sampler_state);
+}
+
+void DeviceContext::SetSamplerState(GeometryShader* geometryShader, Texture* texture) const
+{
+	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
+	m_deviceContext->GSSetSamplers(0, 1, &sampler_state);
+}
+
+void DeviceContext::SetSamplerState(HullShader* hullShader, Texture* texture) const
+{
+	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
+	m_deviceContext->HSSetSamplers(0, 1, &sampler_state);
+}
+
+void DeviceContext::SetSamplerState(DomainShader* domainShader, Texture* texture) const
+{
+	ID3D11SamplerState* sampler_state = texture->GetSamplerState();
+	m_deviceContext->DSSetSamplers(0, 1, &sampler_state);
 }
 
 void DeviceContext::Release()

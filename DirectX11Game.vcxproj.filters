@@ -67,6 +67,15 @@
     <Filter Include="Game\Resource\Meshes">
       <UniqueIdentifier>{e4cfdc79-abeb-46ad-80ea-3a68d0fe1252}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphic\Render Engine\Hull Shader">
+      <UniqueIdentifier>{e6667f8c-b0f7-42c5-ab29-785acaa8217e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphic\Render Engine\Domain Shader">
+      <UniqueIdentifier>{0e9a562f-ad29-4f9f-9f01-e123d9e9a312}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphic\Render Engine\Geometry Shader">
+      <UniqueIdentifier>{eabc1f7a-a081-4178-a803-5aff4c4d945f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -136,7 +145,16 @@
       <Filter>Engine\Graphic</Filter>
     </ClCompile>
     <ClCompile Include="ReadCSO.h">
-      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+      <Filter>Engine\Graphic\Render Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="HullShader.cpp">
+      <Filter>Engine\Graphic\Render Engine\Hull Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="DomainShader.cpp">
+      <Filter>Engine\Graphic\Render Engine\Domain Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Engine\Graphic\Render Engine\Geometry Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +221,15 @@
     <ClInclude Include="Mesh.h">
       <Filter>Engine\Graphic\Resource Manager\Mesh Manager</Filter>
     </ClInclude>
+    <ClInclude Include="HullShader.h">
+      <Filter>Engine\Graphic\Render Engine\Hull Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="DomainShader.h">
+      <Filter>Engine\Graphic\Render Engine\Domain Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>Engine\Graphic\Render Engine\Geometry Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
@@ -215,6 +242,15 @@
       <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="SkyboxPixelShader.hlsl">
+      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="DomainShader.hlsl">
+      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShader.hlsl">
+      <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="HullShader.hlsl">
       <Filter>Engine\Graphic\Render Engine\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

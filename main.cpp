@@ -8,7 +8,7 @@
 
 #ifdef _DEBUG
 #include <iostream>
-int reportHook(int reportType, char* userMessage, int* ) {
+static int reportHook(int reportType, char* userMessage, int* ) {
 	if (reportType == _CRT_ASSERT) {
 		std::cout << userMessage << std::endl;
 		return TRUE;

@@ -48,6 +48,9 @@ private:
 	std::shared_ptr<VertexShader> m_vs = nullptr;
 	std::shared_ptr<PixelShader> m_ps = nullptr;
 	std::shared_ptr<PixelShader> m_sky_ps = nullptr;
+	std::shared_ptr<GeometryShader> m_gs = nullptr;
+	std::shared_ptr<DomainShader> m_ds = nullptr;
+	std::shared_ptr<HullShader> m_hs = nullptr;
 	std::shared_ptr<ConstantBuffer> m_cb = nullptr;
 	std::shared_ptr<ConstantBuffer> m_sky_cb = nullptr;
 	std::shared_ptr<IndexBuffer> m_ib = nullptr;
@@ -64,7 +67,7 @@ private:
 	float m_delta_time = 0.0f;
 
 	DirectX::XMVECTOR camera_pos{ 0.0f, 0.0f, -2.0f };
-	bool m_play_state = false;
+	bool m_play_state = true;
 	bool m_fullscreen_state = false;
 
 

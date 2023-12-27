@@ -2,17 +2,16 @@
 #include "Renderer.h"
 #include "Prerequisites.h"
 
-class PixelShader
+class GeometryShader
 {
 public:
-	PixelShader(Renderer* renderer);
-	~PixelShader();
+	GeometryShader(Renderer* renderer);
+	~GeometryShader();
 	HRESULT Initialize(const void* shader_byte_code, size_t byte_code_size);
-	void Release();
 public:
-	ID3D11PixelShader* GetShader() const;
-public:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps;
+	ID3D11GeometryShader* GetShader() const;
+private:
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_gs;
 	Renderer* m_renderer = nullptr;
 };
 

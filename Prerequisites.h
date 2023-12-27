@@ -14,3 +14,6 @@ class Texture;
 class TextureManager;
 class Mesh;
 class MeshManager;
+class HullShader;
+class DomainShader;
+class GeometryShader;

@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer() 
+Renderer::Renderer()
 {
 	D3D_DRIVER_TYPE driverTypes[] = {
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -76,7 +76,7 @@ void Renderer::Shutdown()
 
 Renderer::~Renderer()
 {
-	
+
 }
 
 std::shared_ptr<SwapChain> Renderer::CreateSwapChain()
@@ -116,6 +116,36 @@ void Renderer::SetRasterizerState(bool is_front_culling)
 	}
 }
 
+std::shared_ptr<GeometryShader> Renderer::CreateGeometryShader(const void* shader_byte_code, size_t byte_code_size)
+{
+	auto gs = std::make_shared<GeometryShader>(this);
+	if (!gs->Initialize(shader_byte_code, byte_code_size))
+	{
+		return nullptr;
+	}
+	return gs;
+}
+
+std::shared_ptr<DomainShader> Renderer::CreateDomainShader(const void* shader_byte_code, size_t byte_code_size)
+{
+	auto ds = std::make_shared<DomainShader>(this);
+	if (!ds->Initialize(shader_byte_code, byte_code_size))
+	{
+		return nullptr;
+	}
+	return ds;
+}
+
+std::shared_ptr<HullShader> Renderer::CreateHullShader(const void* shader_byte_code, size_t byte_code_size)
+{
+	auto hs = std::make_shared<HullShader>(this);
+	if (!hs->Initialize(shader_byte_code, byte_code_size))
+	{
+		return nullptr;
+	}
+	return hs;
+}
+
 std::shared_ptr<VertexShader> Renderer::CreateVertexShader(const void* shader_byte_code, size_t byte_code_size)
 {
 	auto vs = std::make_shared<VertexShader>(this);
@@ -124,6 +154,140 @@ std::shared_ptr<VertexShader> Renderer::CreateVertexShader(const void* shader_by
 		return nullptr;
 	}
 	return vs;
+}
+
+bool Renderer::CompileGeometryShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
+{
+	ReleaseCompiledShader();
+	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
+	unsigned int flag = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined (_DEBUG)
+	flag |= D3DCOMPILE_DEBUG;
+#endif
+
+	std::wstring cso_file_name(file_name);
+	cso_file_name += L".cso";
+
+	if (!std::filesystem::exists(cso_file_name))
+	{
+		wchar_t buff[MAX_PATH] = {};
+		GetModuleFileNameW(0, buff, (sizeof(*RtlpNumberOf(buff))));
+		std::wstring path_to_exe(buff);
+		path_to_exe = path_to_exe.substr(0, path_to_exe.find_last_of(L"\\") + 1);
+		cso_file_name = path_to_exe + cso_file_name;
+	}
+
+	HRESULT hr = D3DReadFileToBlob(cso_file_name.c_str(), &m_blob);
+
+	if (FAILED(hr))
+	{
+		std::wstring hlsl_file_name(file_name);
+		hlsl_file_name += L".hlsl";
+		HRESULT rs = D3DCompileFromFile(hlsl_file_name.c_str(), nullptr, nullptr, entry_point_name, "gs_5_0", flag, NULL, &m_blob, &error_blob);
+		if (FAILED(rs) || error_blob)
+		{
+			if (error_blob)
+			{
+				const std::string errorMessage = (char*)error_blob->GetBufferPointer();
+				OutputDebugStringA(errorMessage.c_str());
+			}
+			throw std::exception("GeometryShader not created successfully");
+			return false;
+		}
+	}
+
+	*shader_byte_code = m_blob->GetBufferPointer();
+	*byte_code_size = m_blob->GetBufferSize();
+	return true;
+}
+
+bool Renderer::CompileDomainShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
+{
+	ReleaseCompiledShader();
+	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
+	unsigned int flag = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined (_DEBUG)
+	flag |= D3DCOMPILE_DEBUG;
+#endif
+
+	std::wstring cso_file_name(file_name);
+	cso_file_name += L".cso";
+
+	if (!std::filesystem::exists(cso_file_name))
+	{
+		wchar_t buff[MAX_PATH] = {};
+		GetModuleFileNameW(0, buff, (sizeof(*RtlpNumberOf(buff))));
+		std::wstring path_to_exe(buff);
+		path_to_exe = path_to_exe.substr(0, path_to_exe.find_last_of(L"\\") + 1);
+		cso_file_name = path_to_exe + cso_file_name;
+	}
+
+	HRESULT hr = D3DReadFileToBlob(cso_file_name.c_str(), &m_blob);
+
+	if (FAILED(hr))
+	{
+		std::wstring hlsl_file_name(file_name);
+		hlsl_file_name += L".hlsl";
+		HRESULT rs = D3DCompileFromFile(hlsl_file_name.c_str(), nullptr, nullptr, entry_point_name, "ds_5_0", flag, NULL, &m_blob, &error_blob);
+		if (FAILED(rs) || error_blob)
+		{
+			if (error_blob)
+			{
+				const std::string errorMessage = (char*)error_blob->GetBufferPointer();
+				OutputDebugStringA(errorMessage.c_str());
+			}
+			throw std::exception("DomainShader not created successfully");
+			return false;
+		}
+	}
+
+	*shader_byte_code = m_blob->GetBufferPointer();
+	*byte_code_size = m_blob->GetBufferSize();
+	return true;
+}
+
+bool Renderer::CompileHullShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
+{
+	ReleaseCompiledShader();
+	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
+	unsigned int flag = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined (_DEBUG)
+	flag |= D3DCOMPILE_DEBUG;
+#endif
+
+	std::wstring cso_file_name(file_name);
+	cso_file_name += L".cso";
+
+	if (!std::filesystem::exists(cso_file_name))
+	{
+		wchar_t buff[MAX_PATH] = {};
+		GetModuleFileNameW(0, buff, (sizeof(*RtlpNumberOf(buff))));
+		std::wstring path_to_exe(buff);
+		path_to_exe = path_to_exe.substr(0, path_to_exe.find_last_of(L"\\") + 1);
+		cso_file_name = path_to_exe + cso_file_name;
+	}
+
+	HRESULT hr = D3DReadFileToBlob(cso_file_name.c_str(), &m_blob);
+
+	if (FAILED(hr))
+	{
+		std::wstring hlsl_file_name(file_name);
+		hlsl_file_name += L".hlsl";
+		HRESULT rs = D3DCompileFromFile(hlsl_file_name.c_str(), nullptr, nullptr, entry_point_name, "hs_5_0", flag, NULL, &m_blob, &error_blob);
+		if (FAILED(rs) || error_blob)
+		{
+			if (error_blob)
+			{
+				const std::string errorMessage = (char*)error_blob->GetBufferPointer();
+				OutputDebugStringA(errorMessage.c_str());
+			}
+			throw std::exception("HullShader not created successfully");
+			return false;
+		}
+	}
+	*shader_byte_code = m_blob->GetBufferPointer();
+	*byte_code_size = m_blob->GetBufferSize();
+	return true;
 }
 
 std::shared_ptr<PixelShader> Renderer::CreatePixelShader(const void* shader_byte_code, size_t byte_code_size)
@@ -135,6 +299,7 @@ std::shared_ptr<PixelShader> Renderer::CreatePixelShader(const void* shader_byte
 
 bool Renderer::CompilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
 {
+	ReleaseCompiledShader();
 	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
 	unsigned int flag = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined (_DEBUG)
@@ -143,12 +308,6 @@ bool Renderer::CompilePixelShader(const wchar_t* file_name, const char* entry_po
 
 	std::wstring cso_file_name(file_name);
 	cso_file_name += L".cso";
-
-	//auto blob = DX::ReadData(cso_file_name.c_str());
-	//*shader_byte_code = new unsigned char[blob.size()];
-	//memcpy(*shader_byte_code, blob.data(), blob.size());
-	//*byte_code_size = blob.size();
-	//return true;
 
 	if (!std::filesystem::exists(cso_file_name))
 	{
@@ -183,6 +342,7 @@ bool Renderer::CompilePixelShader(const wchar_t* file_name, const char* entry_po
 
 bool Renderer::CompileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
 {
+	ReleaseCompiledShader();
 	Microsoft::WRL::ComPtr<ID3DBlob> error_blob = nullptr;
 	unsigned int flag = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined (_DEBUG)
@@ -245,6 +405,7 @@ void Renderer::InitRasterizerState()
 	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
 	rasterizerDesc.FrontCounterClockwise = true;
+
 	rasterizerDesc.DepthClipEnable = true;
 	m_pDevice->CreateRasterizerState(&rasterizerDesc, &m_pRasterizerState_frontCulling);
 

@@ -2,17 +2,16 @@
 #include "Renderer.h"
 #include "Prerequisites.h"
 
-class PixelShader
+class HullShader
 {
 public:
-	PixelShader(Renderer* renderer);
-	~PixelShader();
+	HullShader(Renderer* renderer);
+	~HullShader();
 	HRESULT Initialize(const void* shader_byte_code, size_t byte_code_size);
-	void Release();
 public:
-	ID3D11PixelShader* GetShader() const;
-public:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps;
+	ID3D11HullShader* GetShader();
+private:
 	Renderer* m_renderer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11HullShader> m_hs;
 };
 

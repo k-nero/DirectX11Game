@@ -25,7 +25,7 @@ void PixelShader::Release()
     delete this;
 }
 
-ID3D11PixelShader* PixelShader::GetShader()
+ID3D11PixelShader* PixelShader::GetShader() const
 {
     return m_ps.Get();
 }
