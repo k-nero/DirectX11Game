@@ -90,7 +90,7 @@ void GameWindow::OnCreate()
 	m_texture = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\brick.png");
 	m_sky_tex = g_pGraphics_engine->GetTextureManager()->CreateTextureFromFile(L"Assets\\Textures\\sky.jpg");
 
-	m_mesh = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\teapot.obj");
+	m_mesh = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere_hq.obj");
 	m_sky_box = g_pGraphics_engine->GetMeshManager()->CreateMeshFromFile(L"Assets\\Meshes\\sphere_hq.obj");
 
 	m_swap_chain = g_pGraphics_engine->GetRenderer()->CreateSwapChain();

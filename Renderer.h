@@ -22,7 +22,9 @@ class Renderer
 {
 public:
 	Renderer();
+	[[deprecated("Use Renderer::Renderer() instead")]]
 	bool Initialize();
+	[[deprecated("Use Smart Pointer instead")]]
 	void Shutdown();
 	~Renderer();
 public:

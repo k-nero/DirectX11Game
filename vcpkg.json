@@ -1,0 +1,36 @@
+{
+  "dependencies": [
+    {
+      "name": "assimp",
+      "version>=": "5.3.1#4",
+      "host": true,
+      "platform": "x64"
+    },
+    {
+      "name": "directxmath",
+      "version>=": "2023-12-31",
+      "host": true,
+      "platform": "x64"
+    },
+    {
+      "name": "directxtex",
+      "version>=": "2023-12-31",
+      "host": true,
+      "platform": "x64"
+    },
+    {
+      "name": "tinyobjloader",
+      "version>=": "2.0.0-rc9",
+      "host": true,
+      "platform": "x64",
+      "default-features": false,
+      "features": [
+        {
+          "name": "double",
+          "platform": "x64"
+        }
+      ]
+    }
+  ],
+  "builtin-baseline": "f7c5a7c8fc7b8785df379b8494f323cd3182ca4c"
+}

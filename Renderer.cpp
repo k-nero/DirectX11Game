@@ -54,21 +54,12 @@ Renderer::Renderer()
 	InitRasterizerState();
 }
 
-/// <summary>
-/// Deprecated
-/// Use Renderer::Renderer() instead
-/// </summary>
-/// <returns></returns>
 bool Renderer::Initialize()
 {
 	//Renderer::Renderer();
 	return true;
 }
 
-/// <summary>
-/// Deprecated
-/// Use Smart Pointer instead
-/// </summary>
 void Renderer::Shutdown()
 {
 	//Renderer::~Renderer();
