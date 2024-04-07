@@ -4,8 +4,6 @@ using namespace DirectX;
 
 GameWindow::GameWindow() = default;
 
-
-
 void GameWindow::DrawMesh( Mesh* mesh,  VertexShader* vertexShader,  PixelShader* pixelShader,  ConstantBuffer* constantBuffer,  Texture* texture)
 {
 	auto context = g_pGraphics_engine->GetRenderer()->GetImmediateDeviceContext();
