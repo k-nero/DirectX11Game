@@ -24,59 +24,46 @@ void InputSystem::Update()
 		}
 	}
 
-	if (GetKeyboardState(m_key_states))
+	for (int i = 0; i < 256; i++)
 	{
-		for (int i = 0; i < 256; i++)
+		if (GetAsyncKeyState(i) & 0x8000)
 		{
-			if (m_key_states[i] & 0x80)
+			for (auto& it : m_listeners)
 			{
-				for (auto& it : m_listeners)
+				if (i == VK_LBUTTON)
 				{
-					if (i == VK_LBUTTON)
-					{
-						if (m_key_states[i] != m_old_key_states[i])
-						{
-							it.second->OnLeftMouseDown({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
-						}
-					}
-					else if (i == VK_RBUTTON)
-					{
-						if (m_key_states[i] != m_old_key_states[i])
-						{
-							it.second->OnRightMouseDown({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
-						}
-					}
-					else
-					{
-						it.second->OnKeyDown(i);
-					}
+					it.second->OnLeftMouseDown({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
 				}
-			}
-			else
-			{
-				if (m_key_states[i] != m_old_key_states[i])
+				else if (i == VK_RBUTTON)
 				{
-					for (auto& it : m_listeners)
-					{
-						if (i == VK_LBUTTON)
-						{
-							it.second->OnLeftMouseUp({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
-						}
-						else if (i == VK_RBUTTON)
-						{
-							it.second->OnRightMouseUp({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
-						}
-						else
-						{
-							it.second->OnKeyUp(i);
-						}
-						
-					}
+					it.second->OnRightMouseDown({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
+				}
+				else
+				{
+					it.second->OnKeyDown(i);
 				}
 			}
 		}
-		_memccpy(m_old_key_states, m_key_states, sizeof(m_key_states), sizeof(m_key_states));
+		else
+		{
+			for (auto& it : m_listeners)
+			{
+				if (i == VK_LBUTTON)
+				{
+					it.second->OnLeftMouseUp({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
+				}
+				else if (i == VK_RBUTTON)
+				{
+					it.second->OnRightMouseUp({ static_cast<float>(current_mouse_pos.x), static_cast<float>(current_mouse_pos.y) });
+				}
+				else
+				{
+					it.second->OnKeyUp(i);
+				}
+			}
+		}
 	}
+
 }
 
 void InputSystem::AddListener(IInputListener* listener)
@@ -86,7 +73,7 @@ void InputSystem::AddListener(IInputListener* listener)
 
 void InputSystem::SetCursorPosition(const POINT& position)
 {
-	::SetCursorPos(position.x, position.y);
+	SetCursorPos(position.x, position.y);
 }
 
 void InputSystem::ShowCursor(bool show)

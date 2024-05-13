@@ -20,7 +20,7 @@
     },
     {
       "name": "tinyobjloader",
-      "version>=": "2.0.0-rc9",
+      "version>=": "2.0.0rc13",
       "host": true,
       "platform": "x64",
       "default-features": false,
@@ -32,5 +32,5 @@
       ]
     }
   ],
-  "builtin-baseline": "5fa0f075ea51f305b627ecd5e050a363707353ff"
+  "builtin-baseline": "a1212c93cabaa9c5c36c1ffdb4bddd59fdf31e43"
 }

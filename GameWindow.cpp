@@ -155,8 +155,8 @@ void GameWindow::OnKeyDown(int key)
 	g_pGraphics_engine->GetCamera()->KeyControl(key, m_delta_time);
 	if (key == VK_ESCAPE)
 	{
-		this->m_play_state = !this->m_play_state;
-		InputSystem::Get()->ShowCursor(!this->m_play_state);
+		this->m_play_state = !(this->m_play_state);
+		InputSystem::Get()->ShowCursor(!(this->m_play_state));
 	}
 	if (key == VK_F11)
 	{
